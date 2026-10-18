@@ -82,7 +82,7 @@ onAuthStateChanged(auth, async (user) => {
   } catch (error) {
     if (currentVersion !== authStateVersion) return;
     console.error('Could not load the dashboard profile.', error.code || error.message || 'profile-load-failed');
-    status.textContent = 'Firebase sign-in is active, but the CWU learner profile is unavailable. Learning records on this page remain sample data.';
+    status.textContent = 'Firebase sign-in is active, but the CWU learner profile and protected learning records are unavailable.';
     status.classList.add('error');
   }
 });

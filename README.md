@@ -52,7 +52,6 @@ cyber-world-university/
 │   └── certificate-generator.js
 ├── data/
     ├── courses.js
-    ├── demo-users.js
     ├── questions.js
     └── technologies.js
 └── assets/

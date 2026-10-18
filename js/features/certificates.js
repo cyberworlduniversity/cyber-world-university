@@ -16,8 +16,6 @@
       notice.textContent = 'Certificate artwork preview only. The certificate shown is not issued or validated by this frontend.';
     }
 
-    const verificationLink = document.querySelector('.inline-actions a[href*="verify-certificate"]');
-    if (verificationLink) verificationLink.textContent = 'Open demo certificate lookup';
   }
 
   const printButton = document.getElementById('print-certificate-button');
@@ -34,9 +32,10 @@
   form.addEventListener('submit', (event) => {
     event.preventDefault();
     if (!form.reportValidity()) return;
-    const certificateId = form.elements.id.value.trim().toUpperCase();
-    idOutput.textContent = certificateId;
-    result.hidden = certificateId !== 'CWU-2026-CS-000001';
-    if (result.hidden) window.CWU.showToast('No matching sample record. Live verification is not available.');
+    idOutput.textContent = '';
+    result.hidden = false;
+    const message = document.createElement('p');
+    message.textContent = 'Certificate verification is unavailable until the trusted CWU backend is configured.';
+    result.replaceChildren(message);
   });
 }());

@@ -115,7 +115,7 @@ async function render(user, generation) {
     if (generation !== authGeneration) return;
     dashboard.replaceChildren(createElement(
       'p',
-      `Your sign-in is active, but backend learner records could not be loaded: ${readableError(error)}`,
+      `Your sign-in is active, but protected learner records are unavailable: ${readableError(error)}`,
       'status-message error'
     ));
   }
