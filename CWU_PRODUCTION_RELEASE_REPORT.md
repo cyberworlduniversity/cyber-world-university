@@ -4,14 +4,15 @@
 
 **NOT PRODUCTION READY**
 
-This is a cumulative no-billing hardening report for the existing Firebase project
+This is a cumulative no-billing hardening report updated 2026-10-18 for the existing Firebase project
 `studio-100351834-51432` and the current repository. It does not imply production
 deployment or deployed Firebase rule parity.
 
 No billing was enabled, no account was created, and no production data was written.
 No Firebase backend service (Functions, Storage, Firestore rules, or indexes) or Vercel
-deployment was performed in this pass; no Git commit or push was made. This report does
-not undo or reclassify any earlier Hosting-only release.
+deployment was performed in this pass. Two implementation commits were pushed to
+`origin/main`; their pushes did not update the live Vercel site. This report does not
+undo or reclassify any earlier Hosting-only release.
 
 ## Status summary
 
@@ -36,6 +37,7 @@ not undo or reclassify any earlier Hosting-only release.
 | Secret exposure scan | PASS | Bounded working-tree scan found the expected public Firebase Web API key, but no private-key marker or common private/payment token pattern. Git history and deployed secret stores were not audited. |
 | Local browser routes | PASS | Local smoke covered home, login, registration, courses, course details, dashboard, admin, quiz, certificates, and verification. No uncaught page errors were observed. |
 | Live Vercel short routes | FAIL | `/courses`, `/login`, `/register`, `/student-dashboard`, `/admin-panel`, `/certificates`, `/verify-certificate`, and `/course-details` returned HTTP 404. Local route aliases are not deployed. |
+| Vercel deployment | BLOCKED | Commits were pushed to `origin/main`, but the live site remained unchanged. No Vercel CLI, linked `.vercel` project, or `VERCEL_TOKEN` is available in this environment; Vercel deployment authorization/configuration is required. |
 | Mobile, accessibility, performance | NOT VERIFIED | No complete device, accessibility, or performance audit was run in this pass. |
 
 ## Security work completed
@@ -64,6 +66,8 @@ not undo or reclassify any earlier Hosting-only release.
 - PASS — Live Firebase Auth request using a reserved nonexistent address returned HTTP 400 `INVALID_LOGIN_CREDENTIALS`.
 - PASS — Live unauthenticated Firestore read returned HTTP 403 `PERMISSION_DENIED`. No live write was attempted.
 - PASS — Live Vercel root returned HTTP 200. Existing `.html` routes returned HTTP 308 redirects; short aliases remain 404.
+- FAIL — After the two pushes, live probes still returned HTTP 404 for all eight short aliases and HTTP 308 for all eight requested `/pages/*.html` URLs. The local Vercel config now disables clean-URL redirects so direct HTML paths can return 200, but this config has not reached production.
+- BLOCKED — No Vercel deployment was confirmed. GitHub accepted both pushes; this repository has no GitHub Actions workflow runs, and no Vercel CLI/project link/token is present. Live behavior, not local configuration, is authoritative.
 - FAIL — Live Vercel CSP omits `https://*.cloudfunctions.net` from `connect-src`; the local configuration includes it but has not been deployed.
 - PASS — Bounded source scans for listed DOM/code sinks, secret patterns, payment providers, credential URLs, and misleading success claims.
 - NOT VERIFIED — Firebase authenticated owner/cross-user read, update, and delete matrix; role-escalation attempts; email delivery; successful Auth lifecycle; deployed callable behavior; App Check enforcement; Storage; payment; deployment.
@@ -79,16 +83,16 @@ The first Functions test attempt used Node.js 20.12.2 and failed while loading a
 5. Positive Auth lifecycle tests require an authorized real test inbox/account; none was provided or created.
 6. No production course catalog is seeded. Enrollment, progress, grading, certificates, and role management remain unavailable until deployed backend verification.
 7. No payment provider or server-side verification exists.
-8. Vercel short-route aliases require an authorized deployment, then live route retesting. No deployment was performed.
+8. Vercel deployment authorization/configuration is unavailable here. The pushes to `origin/main` did not deploy; all routes and the Cloud Functions CSP must be retested after Vercel authorization.
 9. The currently deployed Vercel CSP must be updated to permit the source Functions domain before Functions can be called from the site.
 10. Active Vercel build provenance, full mobile behavior, accessibility, and performance remain unverified.
 11. A previous Firebase Functions dry run logged attempts to enable Cloud Build/Artifact Registry APIs; whether those API states changed was not checked.
 
 ## Cumulative worktree inventory
 
-The worktree is on branch `main` at HEAD `8bf9b938875790d199c374eee6f47d0809e47fef`.
-The following 51 paths are modified or newly added; the changes are cumulative and are
-not all attributable to this final follow-up:
+The implementation is committed on branch `main` in commits `a0fcf34` and `c4eefda`.
+The following 51 paths were changed across the cumulative hardening work and are not
+all attributable to this final follow-up:
 
 - `CWU_PRODUCTION_RELEASE_REPORT.md`
 - `QA/CWU_WEBSITE_QA_REPORT.md`
@@ -148,10 +152,10 @@ not all attributable to this final follow-up:
 - **Billing required for Functions deployment:** Yes, per Firebase deployment preflight (Blaze).
 - **Firebase or Storage deployment performed:** No.
 - **Firebase Console configuration changed:** No. Local source configuration files were updated, but not deployed.
-- **Vercel deployment performed:** No.
-- **Commit created:** No.
-- **Push to GitHub:** No.
-- **Worktree:** Contains cumulative uncommitted changes; see `git status --short` in the final delivery summary.
+- **Vercel deployment performed:** No; Vercel authorization/configuration is required.
+- **Commits created:** `a0fcf34` (`feat: complete CWU production LMS integration`) and `c4eefda` (`fix: preserve direct HTML route responses`).
+- **Push to GitHub:** Yes; both commits were pushed to `origin/main`.
+- **Worktree:** Clean after the commits.
 
 ## Final status
 
