@@ -1,191 +1,219 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Cyber World University provides practical cybersecurity education, ethical hacking training, security courses, learning resources, and career-focused cybersecurity education."
-    />
-    <meta
-      property="og:title"
-      content="Cyber World University | Learn Cybersecurity & Ethical Hacking"
-    />
-    <meta
-      property="og:description"
-      content="Learn. Hack Ethically. Defend the Digital World."
-    />
-    <meta property="og:type" content="website" />
-    <link rel="icon" type="image/png" href="assets/logos/cwu-logo.png"><title>Cyber World University | Learn Cybersecurity & Ethical Hacking</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/components.css" />
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Build practical cybersecurity and technology skills with structured learning paths from Cyber World University.">
+  <meta name="theme-color" content="#07111f">
+  <meta property="og:title" content="Cyber World University | Learn. Secure. Lead.">
+  <meta property="og:description" content="Explore structured learning paths in cybersecurity, programming, networking, and more.">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/png" href="assets/logos/cwu-logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
   <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/responsive.css" />
-  </head>
-  <body>
-    <div class="page-shell">
-      <header class="site-header">
-        <nav class="navbar container" aria-label="Main navigation">
-          <a href="#home" class="logo" aria-label="Cyber World University home">
-            <img class="logo-image" src="assets/logos/cwu-logo.png" alt="" width="500" height="500">
-            <span class="logo-text">Cyber World University</span>
-          </a>
-
-          <button
-            class="nav-toggle"
-            type="button"
-            aria-expanded="false"
-            aria-controls="nav-menu"
-            aria-label="Open navigation menu"
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
-
-          <div class="nav-panel" id="nav-menu">
-            <ul class="nav-links">
-              <li><a href="#home" aria-current="page">Home</a></li>
-              <li><a href="pages/courses.html">Courses</a></li>
-              <li><a href="pages/contact.html">Contact</a></li>
-            </ul>
-
-            <div class="nav-actions">
-              <a href="pages/login.html" class="btn btn-secondary">Login</a>
-              <a href="pages/register.html" class="btn btn-primary">Register</a>
-            </div>
-          </div>
-          <button class="theme-toggle" type="button" aria-label="Toggle theme">Light</button>
-        </nav>
-      </header>
-
-      <main id="home">
-  <section class="hero section">
-    <div class="container hero-grid">
-      <div class="hero-copy reveal">
-        <p class="eyebrow">Professional cybersecurity education</p>
-        <img class="brand-wordmark" src="assets/logos/cwu-logo.png" alt="Cyber World University" width="1673" height="941">
-        <h1>Learn. Hack Ethically. Defend the Digital World.</h1>
-        <p class="lead">Professional cybersecurity education designed to help learners build practical technical skills and prepare for cybersecurity careers.</p>
-        <div class="hero-actions">
-          <a href="pages/courses.html" class="btn btn-primary">Explore Courses</a>
-          <a href="pages/register.html" class="btn btn-secondary">Get Started</a>
+  <link rel="stylesheet" href="css/home.css">
+  <title>Cyber World University | Learn. Secure. Lead.</title>
+</head>
+<body class="home-page">
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <header class="site-header">
+    <div class="container navbar">
+      <a class="logo home-brand" href="index.html" aria-label="Cyber World University home">
+        <img class="logo-image" src="assets/logos/cwu-logo.png" alt="">
+        <span class="home-brand-copy"><strong>CYBER WORLD</strong><span>UNIVERSITY</span></span>
+      </a>
+      <button class="nav-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="primary-navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="nav-panel" id="primary-navigation" aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="pages/courses.html">Courses</a></li>
+          <li><a href="#learning-path">Learning path</a></li>
+          <li><a href="pages/study-materials.html">Resources</a></li>
+          <li><a href="pages/about.html">About</a></li>
+        </ul>
+        <div class="nav-actions">
+          <button class="theme-toggle" type="button" aria-label="Switch theme">System</button>
+          <a class="home-auth-link" data-home-auth="login" href="pages/login.html">Log in</a>
+          <a class="btn btn-primary home-auth-link" data-home-auth="register" href="pages/register.html">Get started</a>
+          <a class="btn btn-primary home-dashboard-link" data-home-dashboard href="pages/student-dashboard.html" hidden>My dashboard</a>
         </div>
-      </div>
-      <div class="hero-visual reveal" aria-label="Cybersecurity learning preview">
-        <div class="visual-panel">
-          <div class="grid-glow" aria-hidden="true"></div>
-          <svg class="learning-network" viewBox="0 0 560 520" aria-hidden="true">
-            <g class="network-paths" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M70 86h112l63 76h88l86-94h76M39 225h122l64-63m174 63h111l65-82M67 382h107l49-68m177 0h83l47 68M93 466h110l77-72h107l73 72h57"/>
-              <path d="M280 46v83m0 181v82M56 300h105m239 0h101"/>
-            </g>
-            <g class="network-nodes" fill="currentColor">
-              <circle cx="70" cy="86" r="5"/><circle cx="182" cy="86" r="5"/><circle cx="245" cy="162" r="5"/><circle cx="333" cy="162" r="5"/><circle cx="419" cy="68" r="5"/><circle cx="495" cy="68" r="5"/>
-              <circle cx="39" cy="225" r="5"/><circle cx="161" cy="225" r="5"/><circle cx="399" cy="225" r="5"/><circle cx="510" cy="225" r="5"/><circle cx="56" cy="300" r="5"/><circle cx="161" cy="300" r="5"/><circle cx="399" cy="300" r="5"/><circle cx="500" cy="300" r="5"/>
-              <circle cx="67" cy="382" r="5"/><circle cx="174" cy="382" r="5"/><circle cx="223" cy="314" r="5"/><circle cx="397" cy="314" r="5"/><circle cx="480" cy="382" r="5"/><circle cx="527" cy="382" r="5"/>
-              <circle cx="93" cy="466" r="5"/><circle cx="203" cy="466" r="5"/><circle cx="280" cy="394" r="5"/><circle cx="387" cy="394" r="5"/><circle cx="460" cy="466" r="5"/><circle cx="517" cy="466" r="5"/>
-            </g>
-          </svg>
-          <div class="learning-panel">
-            <div class="learning-panel-top">
-              <span class="learning-panel-brand"><img src="assets/logos/cwu-logo.png" alt="" width="500" height="500"> CWU LEARNING</span>
-              <span class="learning-status"><span class="learning-status-dot"></span> PREVIEW ACTIVE</span>
-            </div>
-            <div class="learning-panel-heading">
-              <div><p>SECURITY LEARNING</p><h2>Build. Practice. Defend.</h2></div>
-              <svg class="learning-shield" viewBox="0 0 80 92" aria-hidden="true">
-                <path d="M40 4 72 16v24c0 22-13 39-32 48C21 79 8 62 8 40V16z" fill="none" stroke="currentColor" stroke-width="3"/>
-                <path d="m25 43 10 10 21-23" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <p class="learning-preview-note">Illustrative learning pathway · no learner data</p>
-            <div class="learning-progress-list" aria-label="Illustrative security learning areas">
-              <div class="learning-progress-row"><div><span>NETWORK</span><span>82%</span></div><div class="learning-progress-track" aria-hidden="true"><span style="--learning-progress:82%"></span></div></div>
-              <div class="learning-progress-row"><div><span>SECURITY</span><span>68%</span></div><div class="learning-progress-track" aria-hidden="true"><span style="--learning-progress:68%"></span></div></div>
-              <div class="learning-progress-row"><div><span>LEARNING</span><span>94%</span></div><div class="learning-progress-track" aria-hidden="true"><span style="--learning-progress:94%"></span></div></div>
-            </div>
-            <div class="learning-panel-footer"><span><span class="learning-status-dot"></span> Safe lab preview</span><span>COURSE PATH 01</span></div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="home-hero">
+      <div class="home-hero-orbit home-hero-orbit-one" aria-hidden="true"></div>
+      <div class="home-hero-orbit home-hero-orbit-two" aria-hidden="true"></div>
+      <div class="container home-hero-grid">
+        <div class="home-hero-copy">
+          <p class="home-eyebrow"><span aria-hidden="true"></span> Build skills for a digital world</p>
+          <h1>Learn to protect<br>what <span>matters.</span></h1>
+          <p class="home-hero-intro">Grow your confidence in cybersecurity and technology through clear, structured learning—at a pace that works for you.</p>
+          <div class="home-hero-actions">
+            <a class="btn btn-primary home-button" href="pages/courses.html">Explore courses <span aria-hidden="true">↗</span></a>
+            <a class="home-text-link" href="#learning-path">See how learning works <span aria-hidden="true">↓</span></a>
+          </div>
+          <div class="home-hero-proof" aria-label="Learning at CWU">
+            <span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>Structured paths</span>
+            <span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>Learn at your pace</span>
+            <span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>Practice as you go</span>
           </div>
         </div>
+        <div class="home-hero-art" aria-label="Illustration of a cybersecurity learning dashboard">
+          <div class="home-art-halo"></div>
+          <div class="home-art-card home-art-card-main">
+            <div class="home-art-topline"><span class="home-art-mark"><img src="assets/logos/cwu-logo.png" alt=""></span><span>LEARNING OVERVIEW</span><span class="home-art-menu" aria-hidden="true">•••</span></div>
+            <div class="home-art-title"><span>YOUR NEXT CHAPTER</span><strong>Cybersecurity<br>foundations</strong><p>A clear path from curious to capable.</p></div>
+            <div class="home-art-progress-label"><span>LEARNING PATH</span><span>01 / 04</span></div>
+            <div class="home-art-progress"><span></span></div>
+            <div class="home-art-list">
+              <div><span class="home-art-step complete">✓</span><span><strong>Digital foundations</strong><small>Core concepts</small></span><b>Done</b></div>
+              <div><span class="home-art-step active">02</span><span><strong>Security essentials</strong><small>Build your toolkit</small></span><b>Next</b></div>
+              <div><span class="home-art-step">03</span><span><strong>Practice &amp; apply</strong><small>Strengthen your skills</small></span></div>
+            </div>
+            <p class="home-art-disclaimer">Illustrative preview · sample learning path</p>
+          </div>
+          <div class="home-art-float home-art-float-top"><span class="home-float-icon">↗</span><span><strong>Learn by doing</strong><small>Practice-led topics</small></span></div>
+          <div class="home-art-float home-art-float-bottom"><span class="home-float-dot"></span><span><strong>Go at your pace</strong><small>Pick up where you left off</small></span></div>
+        </div>
       </div>
-    </div>
-    <div class="container">
-      <dl class="hero-stats" aria-label="Course catalog totals">
-        <div><dt>Courses</dt><dd data-cwu-stat="courses">0</dd></div>
-        <div><dt>Learning topics</dt><dd data-cwu-stat="topics">0</dd></div>
-        <div><dt>Course modules</dt><dd data-cwu-stat="modules">0</dd></div>
-      </dl>
-      <p class="hero-stats-note">Counts are based on the current course catalog. Learner and certificate totals are not tracked in this demo.</p>
-    </div>
-  </section>
-
-  <section class="section courses" id="courses" aria-labelledby="featured-courses-title">
-    <div class="container">
-      <div class="section-heading reveal"><p class="eyebrow">Learn with CWU</p><h2 id="featured-courses-title">Start Learning</h2><p>Explore cybersecurity and technology courses designed for structured learning.</p></div>
-      <div class="card-grid course-grid" id="featured-course-grid"></div>
-      <div class="inline-actions"><a href="pages/courses.html" class="btn btn-secondary">View All Courses</a></div>
-    </div>
-  </section>
-
-  <section class="section why-cwu" aria-labelledby="why-cwu-title">
-    <div class="container">
-      <div class="section-heading reveal"><p class="eyebrow">Why CWU</p><h2 id="why-cwu-title">Build skills with a clear purpose</h2></div>
-      <div class="card-grid feature-grid">
-        <article class="info-card reveal"><h3>Practical Learning</h3><p>Connect security concepts with responsible hands-on practice.</p></article>
-        <article class="info-card reveal"><h3>Structured Courses</h3><p>Progress through organized topics and learning milestones.</p></article>
-        <article class="info-card reveal"><h3>Cybersecurity Skills</h3><p>Build technical knowledge for modern defense roles.</p></article>
-        <article class="info-card reveal"><h3>Professional Certificates</h3><p>Course certificate previews are available; issuance requires a trusted learning system.</p></article>
+      <div class="container home-stats" aria-label="Course catalog">
+        <div><strong data-cwu-stat="courses">—</strong><span>learning paths</span></div>
+        <div><strong data-cwu-stat="modules">—</strong><span>course modules</span></div>
+        <div><strong data-cwu-stat="topics">—</strong><span>topics to explore</span></div>
+        <p>Catalog totals · course content may be updated</p>
       </div>
+    </section>
+
+    <section class="home-section home-courses" id="featured-courses" aria-labelledby="courses-heading">
+      <div class="container">
+        <div class="home-section-heading">
+          <div><p class="home-kicker">Find your direction</p><h2 id="courses-heading">Explore the course catalog</h2><p>Start with the fundamentals or deepen the skills you already have.</p></div>
+          <a class="home-outline-link" href="pages/courses.html">View all courses <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="card-grid course-grid home-course-grid" id="featured-course-grid" aria-live="polite"></div>
+        <p class="home-catalog-note">Course availability, learning activities, and certificate eligibility are described on each course page.</p>
+      </div>
+    </section>
+
+    <section class="home-section home-path-section" id="learning-path" aria-labelledby="path-heading">
+      <div class="container">
+        <div class="home-section-heading home-section-heading-centered">
+          <div><p class="home-kicker">A clear way forward</p><h2 id="path-heading">Learning, step by step</h2><p>Build understanding through an intentional sequence—from first principles to practical application.</p></div>
+        </div>
+        <ol class="home-path-grid">
+          <li class="home-path-item"><span class="home-path-number">01</span><span class="home-path-icon" aria-hidden="true">⌕</span><h3>Choose a path</h3><p>Explore topics and select a course that matches your goals and experience.</p></li>
+          <li class="home-path-item"><span class="home-path-number">02</span><span class="home-path-icon" aria-hidden="true">▤</span><h3>Learn the basics</h3><p>Work through organized modules and focused lessons at a comfortable pace.</p></li>
+          <li class="home-path-item"><span class="home-path-number">03</span><span class="home-path-icon" aria-hidden="true">⌘</span><h3>Practice concepts</h3><p>Use study materials and learning activities to revisit and reinforce ideas.</p></li>
+          <li class="home-path-item"><span class="home-path-number">04</span><span class="home-path-icon" aria-hidden="true">↗</span><h3>Keep progressing</h3><p>Review your learning and explore the next topic when you are ready.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="home-section home-why-section" aria-labelledby="why-heading">
+      <div class="container home-why-layout">
+        <div class="home-why-copy">
+          <p class="home-kicker">Designed for curious minds</p>
+          <h2 id="why-heading">Technology is better understood when learning is clear.</h2>
+          <p class="home-body-copy">CWU brings technical topics into a structured learning experience. Explore a subject, understand the foundations, and make room to practice—without needing to know everything before you begin.</p>
+          <a class="home-text-link" href="pages/about.html">Discover CWU <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="home-benefit-grid">
+          <article class="home-benefit-card"><span class="home-benefit-icon" aria-hidden="true">◎</span><h3>Clear structure</h3><p>Follow organized topics and modules that make a broad subject easier to approach.</p></article>
+          <article class="home-benefit-card"><span class="home-benefit-icon" aria-hidden="true">⌁</span><h3>Practical focus</h3><p>Connect core concepts with learning activities and examples where available.</p></article>
+          <article class="home-benefit-card"><span class="home-benefit-icon" aria-hidden="true">◷</span><h3>Your own pace</h3><p>Explore course materials on your schedule and return to subjects as needed.</p></article>
+          <article class="home-benefit-card"><span class="home-benefit-icon" aria-hidden="true">⌂</span><h3>One place to learn</h3><p>Find courses, study materials, quizzes, and learning tools across the CWU site.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-section home-categories-section" aria-labelledby="category-heading">
+      <div class="container">
+        <div class="home-section-heading">
+          <div><p class="home-kicker">Explore by interest</p><h2 id="category-heading">Find a field to dive into</h2><p>Browse a few of the topics available in the CWU catalog.</p></div>
+        </div>
+        <div class="home-category-grid">
+          <a class="home-category-card" href="pages/course-details.html?id=cwu-soc-009"><span class="home-category-symbol" aria-hidden="true">⌬</span><span><strong>Cybersecurity</strong><small>Security operations &amp; defense</small></span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
+          <a class="home-category-card" href="pages/course-details.html?id=cwu-kali-002"><span class="home-category-symbol" aria-hidden="true">⌑</span><span><strong>Ethical hacking</strong><small>Responsible security testing</small></span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
+          <a class="home-category-card" href="pages/course-details.html?id=cwu-network-003"><span class="home-category-symbol" aria-hidden="true">⌘</span><span><strong>Networking</strong><small>Systems &amp; connectivity</small></span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
+          <a class="home-category-card" href="pages/course-details.html?id=cwu-python-004"><span class="home-category-symbol" aria-hidden="true">{ }</span><span><strong>Programming</strong><small>Languages &amp; development</small></span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
+          <a class="home-category-card" href="pages/course-details.html?id=cwu-linux-008"><span class="home-category-symbol" aria-hidden="true">⌁</span><span><strong>Linux</strong><small>Operating systems &amp; security</small></span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
+          <a class="home-category-card" href="pages/course-details.html?id=cwu-cloud-010"><span class="home-category-symbol" aria-hidden="true">☁</span><span><strong>Cloud security</strong><small>Protecting cloud environments</small></span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-section home-preview-section" aria-labelledby="experience-heading">
+      <div class="container home-preview-grid">
+        <div class="home-preview-visual" aria-hidden="true">
+          <div class="home-preview-window">
+            <div class="home-preview-window-top"><span></span><span></span><span></span><small>MY LEARNING · PREVIEW</small></div>
+            <div class="home-preview-content"><div class="home-preview-label">SAMPLE DASHBOARD</div><strong>Your learning,<br>in one place.</strong><p>Course progress &nbsp; · &nbsp; Resources &nbsp; · &nbsp; Activity</p><div class="home-preview-course"><span class="home-preview-course-icon">◈</span><span><b>Learning path</b><small>Example course card</small></span><span class="home-preview-percent">Sample</span></div><div class="home-preview-course"><span class="home-preview-course-icon">⌘</span><span><b>Study resources</b><small>Explore available materials</small></span><span class="home-preview-percent">Browse</span></div></div>
+          </div>
+        </div>
+        <div class="home-preview-copy">
+          <p class="home-kicker">Your learning space</p>
+          <h2 id="experience-heading">A home for your next step.</h2>
+          <p>Sign in to open the CWU dashboard and explore its available features. Learning progress and enrollment in the current dashboard are demonstrative and are not represented as saved course activity.</p>
+          <a class="btn btn-primary home-button" href="pages/register.html">Create your account <span aria-hidden="true">↗</span></a>
+          <p class="home-preview-note">Dashboard illustration · sample interface, not live student data</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-section home-certificate-section" aria-labelledby="certificate-heading">
+      <div class="container home-certificate-panel">
+        <div class="home-certificate-copy">
+          <p class="home-kicker">Milestones matter</p>
+          <h2 id="certificate-heading">Celebrate the effort you put in.</h2>
+          <p>Some CWU courses describe certificate eligibility. Review the details on the course page and learn how certificate verification works.</p>
+          <a class="home-outline-link" href="pages/verify-certificate.html">Certificate information <span aria-hidden="true">↗</span></a>
+          <p class="home-certificate-note">Certificate samples and eligibility do not independently verify course completion or professional qualification.</p>
+        </div>
+        <div class="home-certificate-art" aria-hidden="true">
+          <div class="home-certificate-seal">CWU<span>LEARNING</span></div>
+          <div class="home-certificate-sheet"><span class="home-certificate-logo"><img src="assets/logos/cwu-logo.png" alt=""></span><small>CYBER WORLD UNIVERSITY</small><strong>Certificate<br>preview</strong><span class="home-certificate-rule"></span><span>Illustrative sample · not an issued credential</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-section home-final-cta" aria-labelledby="cta-heading">
+      <div class="container home-cta-panel">
+        <div><p class="home-kicker">Your next step starts here</p><h2 id="cta-heading">Ready to explore what you can learn?</h2><p>Browse the catalog and find a topic that sparks your curiosity.</p></div>
+        <a class="btn btn-primary home-button" href="pages/courses.html">Browse courses <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="home-footer">
+    <div class="container home-footer-main">
+      <div class="home-footer-brand">
+        <a class="logo home-brand" href="index.html" aria-label="Cyber World University home"><img class="logo-image" src="assets/logos/cwu-logo.png" alt=""><span class="home-brand-copy"><strong>CYBER WORLD</strong><span>UNIVERSITY</span></span></a>
+        <p>Learn with purpose. Build a safer digital future.</p>
+      </div>
+      <div class="home-footer-column"><h2>Explore</h2><a href="pages/courses.html">All courses</a><a href="pages/study-materials.html">Study materials</a><a href="pages/quizzes.html">Quizzes</a><a href="pages/blog.html">Articles</a></div>
+      <div class="home-footer-column"><h2>Your account</h2><a href="pages/register.html">Create account</a><a href="pages/login.html">Log in</a><a href="pages/student-dashboard.html">Student dashboard</a><a href="pages/verify-certificate.html">Verify a certificate</a></div>
+      <div class="home-footer-column"><h2>CWU</h2><a href="pages/about.html">About us</a><a href="pages/contact.html">Contact</a><a href="pages/privacy.html">Privacy</a><a href="pages/terms.html">Terms</a></div>
     </div>
-  </section>
+    <div class="container home-footer-bottom"><span>© <span class="current-year"></span> Cyber World University</span><span>Learn. Secure. Lead.</span></div>
+  </footer>
 
-  <section class="section learning-process" aria-labelledby="learning-process-title">
-    <div class="container">
-      <div class="section-heading reveal"><p class="eyebrow">Your learning journey</p><h2 id="learning-process-title">How Learning Works</h2><p>Explore the intended learning journey. Lessons, enrollment, and completion tracking are not connected in this frontend demo.</p></div>
-      <ol class="steps-grid learning-steps">
-        <li class="step-card reveal"><span class="step-number">01</span><h3>Choose Course</h3><p>Find a course for your goals.</p></li>
-        <li class="step-card reveal"><span class="step-number">02</span><h3>Learn</h3><p>Explore course modules.</p></li>
-        <li class="step-card reveal"><span class="step-number">03</span><h3>Practice</h3><p>Apply ideas in authorized settings.</p></li>
-        <li class="step-card reveal"><span class="step-number">04</span><h3>Quiz</h3><p>Check your understanding.</p></li>
-        <li class="step-card reveal"><span class="step-number">05</span><h3>Final Exam</h3><p>Review the assessment preview.</p></li>
-        <li class="step-card reveal"><span class="step-number">06</span><h3>Certificate</h3><p>Issuance needs verified completion.</p></li>
-      </ol>
-    </div>
-  </section>
-
-  <section class="section contact-cta" aria-labelledby="contact-cta-title">
-    <div class="container contact-cta-panel reveal">
-      <div><p class="eyebrow">Take your next step</p><h2 id="contact-cta-title">Ready to Start Learning?</h2><p>Build your cybersecurity skills with Cyber World University.</p></div>
-      <div class="hero-actions"><a href="pages/courses.html" class="btn btn-primary">Explore Courses</a><a href="pages/contact.html" class="btn btn-secondary">Contact CWU</a></div>
-    </div>
-  </section>
-</main>
-
-      <footer class="site-footer"><div class="container footer-grid"><div><img class="footer-brand-logo" src="assets/logos/cwu-logo.png" alt="Cyber World University" width="500" height="500"><p>Learn. Hack Ethically. Defend the Digital World.</p><p>E. HEMANATHAN — Founder &amp; CEO</p></div><div><h4>Explore</h4><ul><li><a href="pages/courses.html">Courses</a></li><li><a href="pages/contact.html">Contact</a></li></ul></div><div><h4>Legal</h4><ul><li><a href="pages/privacy.html">Privacy</a></li><li><a href="pages/terms.html">Terms</a></li></ul></div></div><div class="footer-bottom container"><p>© <span id="year" class="current-year"></span> Cyber World University</p><p>Frontend demonstration</p></div></footer>
-    </div>
-
-    <div class="toast" id="toast" aria-live="polite" aria-atomic="true"></div>
-
-    <script src="data/courses.js"></script>
-    <script src="js/utils/storage.js"></script>
-    <script src="js/utils/helpers.js"></script>
-    <script src="js/utils/validation.js"></script>
-    <script src="js/core/events.js"></script><script src="js/core/theme.js"></script>
-    <script src="js/core/navigation.js"></script>
-    <script src="js/features/courses.js"></script>
-    <script src="js/core/app.js"></script>
-    
-    <script src="js/animations/interactions.js"></script>
-    <script src="js/animations/reveal.js"></script>
-    <script src="js/animations/counters.js"></script>
-    <script src="js/features/contact.js"></script>
-  </body>
+  <script src="js/utils/helpers.js"></script>
+  <script src="js/utils/storage.js"></script>
+  <script src="js/core/events.js"></script>
+  <script src="js/core/theme.js"></script>
+  <script src="js/core/navigation.js"></script>
+  <script src="data/courses.js"></script>
+  <script src="js/features/courses.js"></script>
+  <script src="js/animations/reveal.js"></script>
+  <script src="js/firebase/firebase-config.js"></script>
+  <script type="module" src="js/features/home-auth.js"></script>
+</body>
 </html>

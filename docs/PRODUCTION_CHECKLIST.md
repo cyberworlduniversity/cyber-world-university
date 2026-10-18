@@ -8,13 +8,14 @@
 | Area | Status | Evidence / required action |
 | --- | --- | --- |
 | Public Hosting routes | PASS (smoke test) | 19 pages and 31 first-party destinations returned HTTP 200; not-found probe returned 404. |
-| Responsive layout | PASS (layout smoke test) | 19 pages checked at 320, 375, 390, 412, 768, 1024, 1366, and 1440 CSS px; 152 checks with no horizontal overflow. Touch/device behavior remains untested. |
+| Responsive layout | PASS (layout smoke test) | Prior Firebase sweep: 19 pages at eight widths (152 checks). Vercel sweep: 19 routes at 320, 390, 768, and 1440 CSS px (76 checks). Touch/device behavior remains untested. |
 | Hosting security headers | PASS | Live CSP, HSTS, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, and `Permissions-Policy` observed. Browser sweep found no CSP violations on audited pages. |
 | Hosting source exclusions | PASS | Live `/firestore.rules`, `/storage.rules`, `/QA/SECURITY_TESTS.md`, `/functions/index.js`, and audit-report paths return 404. |
 | Hosting deployment | PASS | Hosting-only release completed; live channel list shows `2026-10-18 13:22:50`. No backend target was deployed. |
 | GitHub repository | PASS (read-only verification) | Public repository and `main` branch verified. Git CLI and GitHub write access are unavailable in this environment, so local `vercel.json` changes have not been pushed. |
-| Vercel production | FAIL (security configuration) | Production URL is live, but Firestore/Storage rules, Firebase config, Functions, QA, and docs paths return HTTP 200. CSP and several baseline headers are absent. |
-| Vercel hardening change | PENDING DEPLOYMENT | Local `vercel.json` enables clean URLs, adds source-path 404s, and configures CSP/baseline headers. Push to `main`, then verify extensionless routes, protected paths, and live headers. |
+| Vercel production | FAIL (security headers) | All ten tested rules/config/Functions/QA/docs paths now return HTTP 404; clean routes work. Live responses include HSTS only; five required headers are absent. |
+| Vercel header correction | PENDING DEPLOYMENT | The pushed top-level header configuration is ineffective live. A local schema-validated route-level header rule is prepared; push and verify all six headers on production. |
+| Deployment commit linkage | NOT VERIFIED | GitHub `main` is `4eebedf`; live Vercel behavior/timestamp are consistent, but its deployed SHA is not exposed and GitHub has no deployment record. |
 | Deployment source parity | PASS (content only) | GitHub/Vercel and Firebase/local homepage text matches after normalizing line endings and trailing newlines. |
 | Vercel authorized domain | NOT VERIFIED | Inspect Firebase Authentication authorized domains in Console; do not assume this domain is configured. |
 | Firebase client project | PASS (source) | Project configuration was previously verified as `studio-100351834-51432`; this does not confirm all deployed Console settings. |
@@ -40,8 +41,8 @@
 2. Test Firestore/Storage rules and Functions in emulators; verify deployed rules, Functions/IAM, Auth settings, and App Check with an authorized Firebase operator.
 3. Test authenticated workflows using dedicated non-production student, teacher, and admin identities, including cross-user and privilege-escalation denials.
 4. Confirm the dashboard print action and rerun its focused browser test.
-5. Push `vercel.json` through authorized GitHub access and verify its deployment, source-path 404s, and response headers on Vercel.
-6. After the Vercel update, verify both extensionless and `.html` page routes; ensure the intended GitHub-to-Vercel release pipeline remains intact.
+5. Push the local route-level header fix in `vercel.json` through authorized GitHub access and verify all six headers on Vercel.
+6. Obtain Vercel deployment metadata or an immutable deployment URL to confirm the exact active build SHA; verify clean and `.html` page routes (already smoke-tested).
 7. Verify the Vercel hostname in Firebase Auth authorized domains through an authorized Firebase Console session.
 8. Complete full accessibility and performance review and test the additional 360px/414px mobile widths before release.
 

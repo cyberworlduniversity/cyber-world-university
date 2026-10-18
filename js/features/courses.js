@@ -187,7 +187,12 @@
         catalog.append(card);
       });
       count.textContent = `${matches.length} ${matches.length === 1 ? 'course' : 'courses'} found.`;
-      if (!matches.length) catalog.innerHTML = '<p class="empty-state">No courses match your filters. Try broadening your search.</p>';
+      if (!matches.length) {
+        const emptyState = document.createElement('p');
+        emptyState.className = 'empty-state';
+        emptyState.textContent = 'No courses match your filters. Try broadening your search.';
+        catalog.append(emptyState);
+      }
     }
 
     [search, category, level, duration, certificate, technology, learningType].forEach((control) => {
