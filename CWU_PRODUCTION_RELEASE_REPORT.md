@@ -5,9 +5,11 @@
 **NOT PRODUCTION READY**
 
 This is a cumulative no-billing hardening report for the existing Firebase project
-`studio-100351834-51432` and the current repository. The latest confirmed Vercel
-production deployment is commit `6f1c2e366369121c0d19d0557b8f60b4a2b072a8`;
-current route, browser, and header checks were repeated against the live domain.
+`studio-100351834-51432` and the current repository. After source commit
+`dce2686796f1b81adccb96c71343a1bbfb824b28` was pushed to `main`, the live Vercel
+domain served unique markers from the changed files and passed the route, browser,
+and header checks below. The current Vercel deployment record/Ready state was not
+available from the dashboard during this follow-up.
 This does not imply deployed Firebase backend services or deployed Firestore rule parity.
 
 No billing was enabled, no account was created, and no production data was written.
@@ -39,10 +41,10 @@ does not undo or reclassify any earlier Hosting-only release.
 | Listed XSS sinks | PASS | Bounded source scan found none of `innerHTML`, `outerHTML`, `insertAdjacentHTML`, `document.write`, `eval`, `new Function`, string timers, or `javascript:`. Backend lesson links now accept only credential-free HTTPS URLs in the UI. |
 | Secret exposure scan | PASS | Bounded working-tree scan found the expected public Firebase Web API key, but no private-key marker or common private/payment token pattern. Git history and deployed secret stores were not audited. |
 | Local browser routes | PASS | Local smoke covered home, login, registration, courses, course details, dashboard, admin, quiz, certificates, and verification. No uncaught page errors were observed. |
-| Live Vercel routes | PASS | The homepage, all eight required short routes, and all 18 canonical `/pages/*.html` routes checked in this audit returned HTTP 200. |
-| Vercel production deployment | PASS | Authenticated Vercel dashboard showed project `cyber-world-university-2026`, deployment ID `9nFP5Cq6VZ5JtFFjfAtxyDeijB2t`, status Ready, production domain `cyber-world-university-2026.vercel.app`, connected repository `cyberworlduniversity/cyber-world-university`, branch `main`, and commit `6f1c2e366369121c0d19d0557b8f60b4a2b072a8`. This follow-up rechecked the live routes, browser loading, and headers. |
-| Live CWU implementation | PASS | Live home and pages reference the current Firebase auth and LMS page modules; legacy admin/certificate demo module references are absent. Certificate verification displays trusted backend verification messaging, not the old sample-verification form. |
-| Live browser smoke | PASS | Desktop and mobile browser checks covered home and all eight required short routes. All returned HTTP 200, with no uncaught page errors, console errors, or failed HTTP responses. |
+| Live Vercel routes | PASS | After the `dce2686` source push, the homepage, all eight required short routes, and all 18 canonical `/pages/*.html` routes returned HTTP 200. |
+| Vercel production deployment | PASS | The public production site served unique source markers introduced by commit `dce2686796f1b81adccb96c71343a1bbfb824b28`; GitHub `origin/main` matched that commit at verification. Live operation is verified by route/browser responses. The Vercel dashboard itself returned 403/Not authorized, so its current deployment record and explicit Ready label were not verified. The prior dashboard record was for the earlier `6f1c2e3` deployment. |
+| Live CWU implementation | PASS | After the push, live JS assets contained the new unavailable-only certificate verification message and protected-record dashboard wording. The homepage and pages reference Firebase auth and LMS modules; no sample certificate success remains in the legacy module. |
+| Live browser smoke | PASS | Desktop browser checked 27 URLs (home, all eight required short routes, and all 18 canonical `/pages/*.html` routes); mobile checked all nine principal routes. All returned HTTP 200 with nonempty page bodies and no browser console errors, uncaught exceptions, or failed requests. |
 | Mobile, accessibility, performance | NOT VERIFIED | No complete device, accessibility, or performance audit was run in this pass. |
 
 ## Firebase Console verification (2026-10-18)
@@ -131,8 +133,11 @@ administrator, and all backend behavior remains unverified until deployed and te
 - PASS — `firestore.indexes.json` parsed successfully.
 - PASS — Node.js 22 syntax validation passed for 40 repository JavaScript files; all 5 `.json` files and `.firebaserc` parsed.
 - PASS — Live desktop/mobile browser smoke covered the homepage, main route aliases, and all 18 canonical `/pages/*.html` pages; valid routes returned HTTP 200 and canonical pages had no console/page errors, failed requests, or broken visible images.
+- PASS — Post-push Playwright smoke confirmed 27/27 desktop routes and 9/9 mobile routes returned HTTP 200; all pages had nonempty content, with zero console errors, page exceptions, or failed requests.
 - PASS — Same-origin link crawl checked 26 distinct internal links; all returned HTTP 200.
-- PASS — Live response headers repeated; CSP includes `https://*.cloudfunctions.net` and HSTS, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, and `Permissions-Policy` are present.
+- PASS — Post-push live response had all six required security headers; CSP includes `https://*.cloudfunctions.net`.
+- PASS — Post-push production JS responses include the new unavailable certificate verification state and the corrected protected learner-record wording.
+- NOT VERIFIED — Current Vercel dashboard deployment record and explicit Ready status: dashboard page returned 403/Not authorized. Public live source, routes, and browser behavior were verified instead.
 - PASS — Targeted dangerous-sink scan found no application JavaScript matches; private-key/payment-token scan found no matches. The Firebase browser API key is public client configuration, not a private credential.
 - PASS — Role/storage scan found no role read/write through localStorage or sessionStorage; localStorage helper has no call sites. Removed the unreferenced fake-role fixture.
 - PASS — Source confirmation: paid enrollment rejects positive prices; App Check missing-key path rejects LMS calls; certificate code is never taken from a URL; demo certificate verification no longer accepts a hard-coded sample ID.
@@ -148,12 +153,12 @@ administrator, and all backend behavior remains unverified until deployed and te
 - PASS — Homepage no longer renders local sample course cards or sample course totals; admin sample records are absent.
 - PASS — Live Firebase Auth request using a reserved nonexistent address returned HTTP 400 `INVALID_LOGIN_CREDENTIALS`.
 - PASS — Live unauthenticated Firestore read returned HTTP 403 `PERMISSION_DENIED`. No live write was attempted.
-- PASS — Vercel dashboard identifies the production project/domain, connected repository, `main` branch, Ready status, and deployed commit `a1371e3e2a5f10b747b7ae204f7cc5e5b6cf65c8`.
-- PASS — With cache-busting query strings, `/`, all eight short routes, and all eight retained `/pages/*.html` URLs returned HTTP 200 directly.
+- PASS (historical, before the `dce2686` source push) — Vercel dashboard identified the production project/domain, connected repository, `main` branch, Ready status, and deployed commit `a1371e3e2a5f10b747b7ae204f7cc5e5b6cf65c8`. The current dashboard record was inaccessible during the latest follow-up.
+- PASS — After the `dce2686` push, `/`, all eight short routes, and all 18 canonical `/pages/*.html` URLs returned HTTP 200 directly.
 - PASS — Live response includes CSP, HSTS, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, and `Permissions-Policy`; CSP includes `https://*.cloudfunctions.net` and does not enable `unsafe-eval`.
 - PASS — Live source checks found `lms-courses.js`, `lms-dashboard.js`, `lms-admin.js`, and `lms-certificates.js` on their intended pages; auth pages load the current `auth.js` handler. Old admin/certificate demo scripts are absent.
 - PASS — Live certificate verification page says status comes from the CWU backend, requests a certificate ID or one-time code in form fields, and does not show the prior sample ID or sample success button.
-- PASS — Desktop and mobile browser smoke covered home and all eight short routes: 18/18 route visits returned 200 with no blank pages, uncaught exceptions, console errors, or failed HTTP responses.
+- PASS — Post-push desktop and mobile browser smoke covered 27 desktop URLs and all nine main routes at mobile size: every visit returned 200, with no blank pages, uncaught exceptions, console errors, or failed HTTP responses.
 - PASS — Live login and registration use POST and their submit buttons become enabled only after Firebase auth handler initialization. No credentials were submitted in this verification pass.
 - PASS — After deployment, Vercel root response CSP contains `https://*.cloudfunctions.net`; required security headers are present.
 - NOT VERIFIED — Positive Auth lifecycle, authenticated backend authorization, and deployed Functions behavior remain untested.
@@ -213,6 +218,7 @@ all attributable to this final follow-up:
 - `QA/FUNCTIONAL_TESTS.md`
 - `QA/SECURITY_TESTS.md`
 - `README.md`
+- `data/demo-users.js` (removed)
 - `css/style.css`
 - `docs/DATABASE_STRUCTURE.md`
 - `docs/FINAL_PRODUCTION_AUDIT.md`
@@ -266,10 +272,10 @@ all attributable to this final follow-up:
 - **Billing required for Functions deployment:** Yes, per Firebase deployment preflight (Blaze).
 - **Firebase or Storage deployment performed:** No.
 - **Firebase Console configuration changed:** No. Local source configuration files were updated, but not deployed.
-- **Vercel deployment performed:** Yes. Production deployment `7DmvKDGUe2wwUvi7KF7H6tGKyRVh` is Ready; the production domain is assigned and the dashboard reports repository `cyberworlduniversity/cyber-world-university`, branch `main`, deployed commit `a1371e3e2a5f10b747b7ae204f7cc5e5b6cf65c8`.
-- **Application implementation commits:** `a0fcf34`, `c4eefda`, and `a1371e3`.
-- **Push to GitHub:** Yes. The implementation and subsequent deployment-evidence updates were pushed to `origin/main`; the worktree is clean after the report commit.
-- **Application source changes after live verification:** None. Later commits update this release report only.
+- **Vercel deployment performed:** The `dce2686796f1b81adccb96c71343a1bbfb824b28` code is verified live on the production domain by unique source markers, HTTP 200 route responses, live headers, and browser smoke. The current Vercel dashboard Ready record was not accessible (403/Not authorized).
+- **Application implementation commits:** `a0fcf34`, `c4eefda`, `a1371e3`, and `dce2686`.
+- **Push to GitHub:** Yes. `dce2686` was pushed to `origin/main`; remote and local branch matched at verification. The subsequent report update records post-push evidence.
+- **Application source changes after live verification:** None. The source changes in `dce2686` were verified after the push; this report update contains documentation only.
 
 ## Final status
 
