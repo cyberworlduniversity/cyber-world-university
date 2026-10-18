@@ -2,7 +2,8 @@
 
 **Project:** `studio-100351834-51432`  
 **Hosting:** https://studio-100351834-51432.web.app  
-**Status:** Hosting deployment verified; **NOT PRODUCTION READY as an LMS**.
+**Vercel:** https://cyber-world-university-2026.vercel.app/  
+**Status:** Firebase Hosting deployment verified; Vercel security gaps confirmed; **NOT PRODUCTION READY as an LMS**.
 
 | Area | Status | Evidence / required action |
 | --- | --- | --- |
@@ -11,8 +12,11 @@
 | Hosting security headers | PASS | Live CSP, HSTS, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, and `Permissions-Policy` observed. Browser sweep found no CSP violations on audited pages. |
 | Hosting source exclusions | PASS | Live `/firestore.rules`, `/storage.rules`, `/QA/SECURITY_TESTS.md`, `/functions/index.js`, and audit-report paths return 404. |
 | Hosting deployment | PASS | Hosting-only release completed; live channel list shows `2026-10-18 13:22:50`. No backend target was deployed. |
-| Git worktree / GitHub | NOT VERIFIED | Git CLI is unavailable and no remote/repository URL was confirmed. `.gitignore` now covers environment files, key/service-account files, and `.vercel/`. |
-| Vercel | NOT DEPLOYED | No Vercel project, preview, production URL, or Firebase authorized-domain change was verified. |
+| GitHub repository | PASS (read-only verification) | Public repository and `main` branch verified. Git CLI and GitHub write access are unavailable in this environment, so local `vercel.json` changes have not been pushed. |
+| Vercel production | FAIL (security configuration) | Production URL is live, but Firestore/Storage rules, Firebase config, Functions, QA, and docs paths return HTTP 200. CSP and several baseline headers are absent. |
+| Vercel hardening change | PENDING DEPLOYMENT | Local `vercel.json` enables clean URLs, adds source-path 404s, and configures CSP/baseline headers. Push to `main`, then verify extensionless routes, protected paths, and live headers. |
+| Deployment source parity | PASS (content only) | GitHub/Vercel and Firebase/local homepage text matches after normalizing line endings and trailing newlines. |
+| Vercel authorized domain | NOT VERIFIED | Inspect Firebase Authentication authorized domains in Console; do not assume this domain is configured. |
 | Firebase client project | PASS (source) | Project configuration was previously verified as `studio-100351834-51432`; this does not confirm all deployed Console settings. |
 | Authentication runtime | NOT VERIFIED | No account credentials were supplied. Test registration, verification, login, reset, disabled-account behavior, session persistence, and logout with non-production identities. |
 | Authorization / RBAC | FAIL for LMS release | Admin/student pages and learning data are demos. Implement and test trusted server-side authorization before offering privileged workflows. |
@@ -36,7 +40,9 @@
 2. Test Firestore/Storage rules and Functions in emulators; verify deployed rules, Functions/IAM, Auth settings, and App Check with an authorized Firebase operator.
 3. Test authenticated workflows using dedicated non-production student, teacher, and admin identities, including cross-user and privilege-escalation denials.
 4. Confirm the dashboard print action and rerun its focused browser test.
-5. Complete GitHub/Vercel setup only with authorized accounts and an actual repository/deployment; verify a preview before production and add the actual Vercel host to Firebase Auth only after deployment.
-6. Complete full accessibility and performance review and repeat regression checks.
+5. Push `vercel.json` through authorized GitHub access and verify its deployment, source-path 404s, and response headers on Vercel.
+6. After the Vercel update, verify both extensionless and `.html` page routes; ensure the intended GitHub-to-Vercel release pipeline remains intact.
+7. Verify the Vercel hostname in Firebase Auth authorized domains through an authorized Firebase Console session.
+8. Complete full accessibility and performance review and test the additional 360px/414px mobile widths before release.
 
 For the evidence and detailed findings, see [FINAL_PRODUCTION_SECURITY_AUDIT.md](./FINAL_PRODUCTION_SECURITY_AUDIT.md).
