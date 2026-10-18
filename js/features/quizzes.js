@@ -110,7 +110,7 @@
     const score = answers.reduce((total, answer, index) => total + (answer === questions[index].answer ? 1 : 0), 0);
     const percentage = Math.round((score / questions.length) * 100);
     const passed = percentage >= 70;
-    result.textContent = `Demo result: ${score}/${questions.length} (${percentage}%). ${passed ? 'Sample pass' : 'Keep practicing'} — no result has been stored or sent.`;
+    result.textContent = `Practice/demo result only: ${score}/${questions.length} (${percentage}%). ${passed ? 'Sample pass' : 'Keep practicing'} — this is not an official academic result and has not been stored or sent.`;
     const attempt = document.createElement('li');
     attempt.textContent = `${new Date().toLocaleString()} — ${assessmentName}: ${score}/${questions.length} (${percentage}%), ${passed ? 'sample pass' : 'review recommended'}`;
     history.prepend(attempt);

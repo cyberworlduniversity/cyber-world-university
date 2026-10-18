@@ -6,7 +6,8 @@
     "node": "22"
   },
   "scripts": {
-    "lint": "node --check index.js"
+    "lint": "node --check index.js",
+    "test": "node --test"
   },
   "dependencies": {
     "@google-cloud/firestore": "^9.1.0",

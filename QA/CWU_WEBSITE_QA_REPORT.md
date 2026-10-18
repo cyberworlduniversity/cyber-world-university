@@ -1,5 +1,7 @@
 # CWU Website QA Report
 
+> **Historical snapshot.** Firebase account, deployment, and security evidence below predates the latest no-billing follow-up. See [CWU_PRODUCTION_RELEASE_REPORT.md](../CWU_PRODUCTION_RELEASE_REPORT.md) for current evidence. Do not rely on this report for current Firebase deployment status.
+
 **Run date:** 2026-10-18  
 **Environment:** Windows; local Python HTTP server; Node.js 20.12.2, Functions checked with Node.js 22.23.3; Firebase CLI 15.34.0; Java 8.  
 **Scope:** Static CWU site, supplied Firebase Web app config, local Auth-page SDK initialization, static checks, browser responsive/resource sweep, and limited live Auth checks. No production deployment or Firestore/Storage writes.

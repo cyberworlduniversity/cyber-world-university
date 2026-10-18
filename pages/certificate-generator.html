@@ -58,18 +58,18 @@
           </label>
 
           <label class="field" for="issue-date">
-            Issue date
+          Sample issue date
             <input id="issue-date" name="issueDate" type="date" value="2026-10-18" required>
           </label>
 
           <label class="field" for="signatory-name">
-            Authorized signatory name
-            <input id="signatory-name" name="signatoryName" type="text" maxlength="80" value="E. HEMANATHAN" required>
+            Sample signatory name
+            <input id="signatory-name" name="signatoryName" type="text" maxlength="80" value="Sample Signatory" required>
           </label>
 
           <label class="field" for="signatory-role">
-            Signatory designation
-            <input id="signatory-role" name="signatoryRole" type="text" maxlength="80" value="Founder &amp; CEO" required>
+            Sample signatory designation
+            <input id="signatory-role" name="signatoryRole" type="text" maxlength="80" value="Sample designation" required>
           </label>
 
           <label class="field field-full" for="signature-upload">
@@ -87,14 +87,14 @@
         <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
 
         <div class="editor-actions">
-          <button class="button button-primary" type="submit">Generate Certificate</button>
+          <button class="button button-primary" type="submit">Generate Preview</button>
           <button class="button button-secondary" id="update-preview" type="button">Update Preview</button>
-          <button class="button button-secondary" id="print-certificate" type="button">Print Certificate</button>
-          <button class="button button-secondary" id="save-pdf" type="button">Save as PDF</button>
+          <button class="button button-secondary" id="print-certificate" type="button">Print Preview</button>
+          <button class="button button-secondary" id="save-pdf" type="button">Save Preview as PDF</button>
           <button class="button button-quiet" id="reset-form" type="reset">Reset Form</button>
         </div>
       </form>
-      <p class="demo-warning"><strong>Demo only:</strong> a generated page is not an official credential, an authorized issuance, or a verified record. Do not use it to misrepresent qualifications.</p>
+      <p class="demo-warning"><strong>Preview / sample only:</strong> generated output is not an official credential, an authorized issuance, or a verified record. Do not use it to misrepresent qualifications.</p>
     </section>
 
     <section class="preview-panel" aria-label="Editable certificate preview">
@@ -122,7 +122,7 @@
           <h2 class="certificate-heading"><span id="preview-heading-main">CERTIFICATE</span><small id="preview-heading-sub">OF EXCELLENCE</small></h2>
           <div class="ornament ornament-heading" aria-hidden="true"><span></span><i>❧</i><span></span></div>
           <p class="awarding-institution">CYBER WORLD UNIVERSITY</p>
-          <p class="award-intro">This certificate is proudly awarded to</p>
+          <p class="award-intro">Illustrative sample layout for</p>
 
           <div class="student-photo-wrap" id="student-photo-wrap" hidden>
             <img id="preview-student-photo" alt="Student photo preview">
@@ -130,21 +130,21 @@
           <p class="student-name" id="preview-student-name">Alex Morgan</p>
           <div class="ornament ornament-name" aria-hidden="true"><span></span><i>◆</i><span></span></div>
 
-          <p class="award-copy">in recognition of dedication, demonstrated knowledge, and successful completion of the educational and practical training program in</p>
+          <p class="award-copy">No course completion, qualification, or award is claimed by this preview. Example course title:</p>
           <h2 class="course-name" id="preview-course-title">CYBERSECURITY FUNDAMENTALS</h2>
           <div class="ornament ornament-course" aria-hidden="true"><span></span><i>◆</i><span></span></div>
-          <p class="certificate-copy" id="preview-copy-one">The recipient has successfully fulfilled the academic requirements, practical assessments, and ethical standards established by Cyber World University and is recognized for completing the specified training program.</p>
-          <p class="certificate-copy" id="preview-copy-two">This certificate acknowledges achievement in identifying, analyzing, and mitigating security vulnerabilities while adhering to authorized testing practices and professional cybersecurity standards.</p>
+          <p class="certificate-copy" id="preview-copy-one">Preview/sample only. This text does not assert course completion, an award, or a professional qualification.</p>
+          <p class="certificate-copy" id="preview-copy-two">No official certificate has been issued, registered, or verified by this frontend.</p>
 
           <section class="certificate-bottom" aria-label="Credential, seal, and authorized signatory">
             <div class="credential-details">
               <div class="detail-item">
                 <span class="detail-icon" aria-hidden="true">ID</span>
-                <span><small>CREDENTIAL ID</small><strong id="preview-credential-id">DEMO-CWU-2026-0001</strong></span>
+                <span><small>SAMPLE ID</small><strong id="preview-credential-id">DEMO-CWU-2026-0001</strong></span>
               </div>
               <div class="detail-item">
                 <span class="detail-icon" aria-hidden="true">✦</span>
-                <span><small>DATE OF ISSUE</small><strong id="preview-issue-date">October 18, 2026</strong></span>
+                <span><small>SAMPLE DATE</small><strong id="preview-issue-date">October 18, 2026</strong></span>
               </div>
             </div>
 
@@ -156,12 +156,12 @@
             </div>
 
             <div class="signature-block">
-              <small class="signature-label">AUTHORIZED SIGNATURE</small>
+              <small class="signature-label">SAMPLE SIGNATORY</small>
               <img id="preview-signature-image" class="signature-image" alt="" hidden>
               <span id="signature-placeholder" class="signature-placeholder">Replaceable signature</span>
               <span class="signature-rule"></span>
-              <strong id="preview-signatory-name">E. HEMANATHAN</strong>
-              <span id="preview-signatory-role">Founder &amp; CEO</span>
+              <strong id="preview-signatory-name">Sample Signatory</strong>
+              <span id="preview-signatory-role">Sample designation</span>
               <span>Cyber World University</span>
             </div>
           </section>

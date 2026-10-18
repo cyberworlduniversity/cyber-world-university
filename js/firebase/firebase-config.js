@@ -20,6 +20,7 @@
   window.CWU_FIREBASE = Object.freeze({
     config,
     isConfigured,
+    appCheckSiteKey: '',
     useEmulators: false
   });
 }());

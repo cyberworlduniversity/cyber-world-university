@@ -28,7 +28,7 @@ NOT VERIFIED — Source contains Auth user-created and user-deleted triggers for
 NOT VERIFIED — Firebase Console enforcement/configuration was not accessible from this audit.
 
 ## XSS
-PASS (static review only) — The source scan found one `innerHTML` assignment, which inserts a fixed empty-state string rather than user-controlled content. Query-derived course/certificate values are validated or inserted as text. No runtime injection testing was performed.
+NOT VERIFIED — A bounded source scan found one `innerHTML` assignment for a fixed empty-state string. This is source-inspection evidence only; comprehensive runtime injection testing was not performed.
 
 ## Security Headers
 FAIL — Live responses include HSTS, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, and `Permissions-Policy`. A CSP header is present, but its only directive is `frame-ancestors 'none'`; it does not restrict script, style, image, or other content sources. No CSP change was made because a safe policy needs compatibility testing against the current Firebase CDN and page scripts.

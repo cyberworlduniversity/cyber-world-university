@@ -119,6 +119,10 @@ button {
   cursor: pointer;
 }
 
+.theme-toggle {
+  display: none !important;
+}
+
 .page-shell {
   min-height: 100vh;
 }

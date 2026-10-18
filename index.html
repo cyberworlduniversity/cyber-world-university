@@ -41,7 +41,7 @@
           <button class="theme-toggle" type="button" aria-label="Switch theme">System</button>
           <a class="home-auth-link" data-home-auth="login" href="pages/login.html">Log in</a>
           <a class="btn btn-primary home-auth-link" data-home-auth="register" href="pages/register.html">Get started</a>
-          <a class="btn btn-primary home-dashboard-link" data-home-dashboard href="pages/student-dashboard.html" hidden>My dashboard</a>
+          <a class="btn btn-primary home-dashboard-link" data-home-dashboard href="pages/student-dashboard.html" hidden>Dashboard preview</a>
         </div>
       </nav>
     </div>
@@ -54,7 +54,7 @@
       <div class="container home-hero-grid">
         <div class="home-hero-copy">
           <p class="home-eyebrow"><span aria-hidden="true"></span> Build skills for a digital world</p>
-          <h1>Learn to protect<br>what <span>matters.</span></h1>
+          <h1>Learn to protect<br> what <span>matters.</span></h1>
           <p class="home-hero-intro">Grow your confidence in cybersecurity and technology through clear, structured learning—at a pace that works for you.</p>
           <div class="home-hero-actions">
             <a class="btn btn-primary home-button" href="pages/courses.html">Explore courses <span aria-hidden="true">↗</span></a>
@@ -84,11 +84,8 @@
           <div class="home-art-float home-art-float-bottom"><span class="home-float-dot"></span><span><strong>Go at your pace</strong><small>Pick up where you left off</small></span></div>
         </div>
       </div>
-      <div class="container home-stats" aria-label="Course catalog">
-        <div><strong data-cwu-stat="courses">—</strong><span>learning paths</span></div>
-        <div><strong data-cwu-stat="modules">—</strong><span>course modules</span></div>
-        <div><strong data-cwu-stat="topics">—</strong><span>topics to explore</span></div>
-        <p>Catalog totals · course content may be updated</p>
+      <div class="container home-stats" aria-label="Course catalog status">
+        <p class="notice">Live course listings are unavailable until the CWU backend and App Check are configured. No sample course totals are shown.</p>
       </div>
     </section>
 
@@ -98,8 +95,7 @@
           <div><p class="home-kicker">Find your direction</p><h2 id="courses-heading">Explore the course catalog</h2><p>Start with the fundamentals or deepen the skills you already have.</p></div>
           <a class="home-outline-link" href="pages/courses.html">View all courses <span aria-hidden="true">↗</span></a>
         </div>
-        <div class="card-grid course-grid home-course-grid" id="featured-course-grid" aria-live="polite"></div>
-        <p class="home-catalog-note">Course availability, learning activities, and certificate eligibility are described on each course page.</p>
+        <p class="home-catalog-note">Course listings are not currently available from the backend. Open the catalog for the current service status; static sample records are not presented as live courses.</p>
       </div>
     </section>
 
@@ -137,15 +133,15 @@
     <section class="home-section home-categories-section" aria-labelledby="category-heading">
       <div class="container">
         <div class="home-section-heading">
-          <div><p class="home-kicker">Explore by interest</p><h2 id="category-heading">Find a field to dive into</h2><p>Browse a few of the topics available in the CWU catalog.</p></div>
+          <div><p class="home-kicker">Explore by interest</p><h2 id="category-heading">Find a field to dive into</h2><p>Topic areas CWU aims to cover; this list is not a live course catalog.</p></div>
         </div>
         <div class="home-category-grid">
-          <a class="home-category-card" href="pages/course-details.html?id=cwu-soc-009"><span class="home-category-symbol" aria-hidden="true">⌬</span><span><strong>Cybersecurity</strong><small>Security operations &amp; defense</small></span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
-          <a class="home-category-card" href="pages/course-details.html?id=cwu-kali-002"><span class="home-category-symbol" aria-hidden="true">⌑</span><span><strong>Ethical hacking</strong><small>Responsible security testing</small></span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
-          <a class="home-category-card" href="pages/course-details.html?id=cwu-network-003"><span class="home-category-symbol" aria-hidden="true">⌘</span><span><strong>Networking</strong><small>Systems &amp; connectivity</small></span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
-          <a class="home-category-card" href="pages/course-details.html?id=cwu-python-004"><span class="home-category-symbol" aria-hidden="true">{ }</span><span><strong>Programming</strong><small>Languages &amp; development</small></span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
-          <a class="home-category-card" href="pages/course-details.html?id=cwu-linux-008"><span class="home-category-symbol" aria-hidden="true">⌁</span><span><strong>Linux</strong><small>Operating systems &amp; security</small></span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
-          <a class="home-category-card" href="pages/course-details.html?id=cwu-cloud-010"><span class="home-category-symbol" aria-hidden="true">☁</span><span><strong>Cloud security</strong><small>Protecting cloud environments</small></span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
+          <a class="home-category-card" href="pages/courses.html"><span class="home-category-symbol" aria-hidden="true">⌬</span><span><strong>Cybersecurity</strong><small>Security operations &amp; defense</small></span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
+          <a class="home-category-card" href="pages/courses.html"><span class="home-category-symbol" aria-hidden="true">⌑</span><span><strong>Ethical hacking</strong><small>Responsible security testing</small></span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
+          <a class="home-category-card" href="pages/courses.html"><span class="home-category-symbol" aria-hidden="true">⌘</span><span><strong>Networking</strong><small>Systems &amp; connectivity</small></span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
+          <a class="home-category-card" href="pages/courses.html"><span class="home-category-symbol" aria-hidden="true">{ }</span><span><strong>Programming</strong><small>Languages &amp; development</small></span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
+          <a class="home-category-card" href="pages/courses.html"><span class="home-category-symbol" aria-hidden="true">⌁</span><span><strong>Linux</strong><small>Operating systems &amp; security</small></span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
+          <a class="home-category-card" href="pages/courses.html"><span class="home-category-symbol" aria-hidden="true">☁</span><span><strong>Cloud security</strong><small>Protecting cloud environments</small></span><span class="home-category-arrow" aria-hidden="true">↗</span></a>
         </div>
       </div>
     </section>
@@ -161,7 +157,7 @@
         <div class="home-preview-copy">
           <p class="home-kicker">Your learning space</p>
           <h2 id="experience-heading">A home for your next step.</h2>
-          <p>Sign in to open the CWU dashboard and explore its available features. Learning progress and enrollment in the current dashboard are demonstrative and are not represented as saved course activity.</p>
+          <p>Sign in to view the CWU dashboard preview. Its sample progress and enrollment figures are illustrative only and are not saved course activity.</p>
           <a class="btn btn-primary home-button" href="pages/register.html">Create your account <span aria-hidden="true">↗</span></a>
           <p class="home-preview-note">Dashboard illustration · sample interface, not live student data</p>
         </div>
@@ -173,7 +169,7 @@
         <div class="home-certificate-copy">
           <p class="home-kicker">Milestones matter</p>
           <h2 id="certificate-heading">Celebrate the effort you put in.</h2>
-          <p>Some CWU courses describe certificate eligibility. Review the details on the course page and learn how certificate verification works.</p>
+          <p>Static course descriptions may mention certificates, but no eligibility assessment or trusted certificate verification is configured.</p>
           <a class="home-outline-link" href="pages/verify-certificate.html">Certificate information <span aria-hidden="true">↗</span></a>
           <p class="home-certificate-note">Certificate samples and eligibility do not independently verify course completion or professional qualification.</p>
         </div>
@@ -199,7 +195,7 @@
         <p>Learn with purpose. Build a safer digital future.</p>
       </div>
       <div class="home-footer-column"><h2>Explore</h2><a href="pages/courses.html">All courses</a><a href="pages/study-materials.html">Study materials</a><a href="pages/quizzes.html">Quizzes</a><a href="pages/blog.html">Articles</a></div>
-      <div class="home-footer-column"><h2>Your account</h2><a href="pages/register.html">Create account</a><a href="pages/login.html">Log in</a><a href="pages/student-dashboard.html">Student dashboard</a><a href="pages/verify-certificate.html">Verify a certificate</a></div>
+      <div class="home-footer-column"><h2>Your account</h2><a href="pages/register.html">Create account</a><a href="pages/login.html">Log in</a><a href="pages/student-dashboard.html">Dashboard preview</a><a href="pages/verify-certificate.html">View certificate sample</a></div>
       <div class="home-footer-column"><h2>CWU</h2><a href="pages/about.html">About us</a><a href="pages/contact.html">Contact</a><a href="pages/privacy.html">Privacy</a><a href="pages/terms.html">Terms</a></div>
     </div>
     <div class="container home-footer-bottom"><span>© <span class="current-year"></span> Cyber World University</span><span>Learn. Secure. Lead.</span></div>
@@ -210,8 +206,6 @@
   <script src="js/core/events.js"></script>
   <script src="js/core/theme.js"></script>
   <script src="js/core/navigation.js"></script>
-  <script src="data/courses.js"></script>
-  <script src="js/features/courses.js"></script>
   <script src="js/animations/reveal.js"></script>
   <script src="js/firebase/firebase-config.js"></script>
   <script type="module" src="js/features/home-auth.js"></script>

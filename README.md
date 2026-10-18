@@ -1,17 +1,16 @@
 # Cyber World University
 
-Cyber World University (CWU) is a cybersecurity education frontend demo with the tagline **Learn. Hack Ethically. Defend the Digital World.** The current phase uses static HTML, CSS, and vanilla JavaScript and preserves the original landing page while adding a data-driven course catalog and learning-platform page previews.
+Cyber World University (CWU) is a cybersecurity education website with the tagline **Learn. Hack Ethically. Defend the Digital World.** The site uses static HTML, CSS, and vanilla JavaScript; Firebase Auth handles sign-in, while LMS pages call a source-only backend that is not deployed.
 
 ## Features
 
-- Responsive CWU landing page with CWU logo branding, concise Home/Courses/Contact navigation, mobile navigation, a focused course-led introduction, and catalog-derived course/topic/module totals.
-- Theme selection supports Dark, Light, and System preferences through shared design tokens.
-- Searchable and filterable catalog of 12 courses with category, difficulty, duration, certificate, technology, and learning-type filters. Search covers course title, category, description, difficulty, technologies, and skills. Every course has an individual local image, meaningful alt text, a resilient fallback, and the same image on its detail page.
-- Course catalog and detail pages with enrollment links, course-specific assessment-preview links, study-material filters, interactive roadmap, certificate samples, editable certificate preview generator, and demo certificate lookup.
+- Responsive CWU landing page with CWU logo branding, concise Home/Courses/Contact navigation, mobile navigation, and an explicit unavailable state instead of sample course totals or featured records.
+- The site uses a dark-only theme; the theme switcher is disabled.
+- Course catalog and detail pages request published backend records; they do not present local sample courses as published offerings. Enrollment and protected learning operations remain unavailable until Functions and App Check are configured.
 - Firebase email/password account registration, email verification, sign-in persistence, password-reset requests, and sign-out.
-- Student dashboard and printable sample student ID card using clearly marked sample data.
-- Admin panel with add/edit/delete/search/filter interactions limited to in-memory demo rows.
-- Ten-question browser-only quiz preview with question navigation, countdown, score, and current-page attempt history. Course details link to practice-quiz and final-exam previews; both currently use the same sample question set and do not track eligibility.
+- Backend-connected dashboard, quiz, certificate, and admin/teacher pages. These fail closed when App Check or deployed backend services are unavailable.
+- Clearly labeled practice quizzes and editable certificate previews; neither produces official academic results or credentials.
+- Firebase email/password account registration, email verification, sign-in persistence, password-reset requests, and sign-out.
 - Semantic page structure, responsive layouts, keyboard focus states, reduced-motion support, unique page titles and descriptions.
 
 ## Folder structure
@@ -68,13 +67,13 @@ cyber-world-university/
 
 The supplied `CWU LOGO.PNG` is stored as `assets/logos/cwu-logo.png` and used throughout the site, including navigation, footer branding, course and platform brand marks, certificate and student ID previews, and page favicons. Course artwork in `assets/images/` is attached to matching course cards and detail pages. `assets/certificates/certificate.png` is displayed as supplied certificate artwork; the frontend does not issue or verify it.
 
-Course records in `data/courses.js` use shared image/alt text, technology, skill, and learning-type metadata. The catalog search and filters, featured cards, and course details render from those shared records; course cards are not duplicated in HTML. Homepage course, topic, and module totals are calculated from the same dataset. Learner, completion, and certificate totals are not available because this frontend has no connected backend. Existing CWU course artwork is retained where available, and the remaining current/future image set uses locally authored SVG illustrations. Image sources are documented in `assets/images/courses/SOURCES.md`; image failures degrade to an accessible CWU fallback rather than a broken-image icon.
+`data/courses.js` and other legacy sample datasets are not used as authoritative catalog records. Homepage totals and featured sample courses have been removed. The current course pages render only backend-returned published records; no live published catalog is available while backend prerequisites are unresolved. Course artwork and image fallbacks remain available for previews. Image sources are documented in `assets/images/courses/SOURCES.md`.
 
 The editable, print-oriented certificate generator is available at `pages/certificate-generator.html`. Its `css/certificate.css` stylesheet and `js/certificate-generator.js` behavior are independent of the shared site styles. Generated certificates are local visual previews only and do not represent authorized issuance or verification.
 
 ### Module boundaries
 
-- `js/core/` contains shared page bootstrap, navigation, theme selection, and the lightweight event bus.
+- `js/core/` contains shared page bootstrap, navigation, the fixed dark theme, and the lightweight event bus.
 - `js/features/` contains isolated course, quiz, certificate, admin, auth, dashboard, roadmap, contact, and study-material page behaviors.
 - `js/animations/` contains opt-in reveal, counter, and interaction modules. Reusable animation rules live in `css/animations.css`.
 - `js/utils/` contains storage, validation, and UI helpers. Feature scripts receive shared helpers from classic script loading; page-specific data remains in `data/`.
@@ -90,19 +89,21 @@ Reusable component styles and helpers are prepared for badges, notifications, to
 - CSS3
 - Vanilla JavaScript ES6+
 
-The project has no frontend framework or complete LMS backend. A Firebase Web app configuration is present and the account pages initialize the Firebase SDK, but authentication requests currently fail because the Firebase project reports that Authentication is not configured. Google Fonts is optional; pages fall back to system sans-serif fonts if unavailable.
+The project has no frontend framework or deployed LMS backend. The Firebase Web app configuration is public client configuration. A safe sign-in request using a reserved, nonexistent test identity reached Firebase Auth and was rejected with `INVALID_LOGIN_CREDENTIALS`; no positive login or account creation was attempted. Google Fonts is optional; pages fall back to system sans-serif fonts if unavailable.
 
 ### Firebase implementation status
 
-The Firebase Hosting, Emulator Suite, and Cloud Functions configuration targets project `studio-100351834-51432` via `.firebaserc`. Browser checks verified Firebase Auth registration and password-reset requests against the supplied Web app config. Login/logout remain unverified because the test account requires email verification and subsequent attempts were rate-limited. A trusted Auth trigger provisions new accounts with a student role claim and creates `users/{uid}`. `js/firebase/profiles.js` exposes owner-scoped profile reads/limited updates, and `js/firebase/avatars.js` provides validated owner avatar uploads/deletes. Firestore reserves profile listing for a trusted admin claim; Storage permits only owner-private avatar files. Other Firestore collections and Storage paths remain denied. Test Auth accounts were created; no Firestore/Storage writes or production deployment were performed. Setup steps are in [docs/FIREBASE_SETUP.md](./docs/FIREBASE_SETUP.md); rules and the proposed data model are described in [docs/FIREBASE_SECURITY.md](./docs/FIREBASE_SECURITY.md) and [docs/DATABASE_STRUCTURE.md](./docs/DATABASE_STRUCTURE.md). No role-management workflow, protected dashboard, course data, enrollment, assessments, certificates, or full administrative backend is implemented.
+The Firebase Hosting, Emulator Suite, and Cloud Functions configuration targets project `studio-100351834-51432` via `.firebaserc`. A live unauthenticated Firestore read returned HTTP 403 `PERMISSION_DENIED`; authenticated ownership and mutation boundaries were not tested. No Cloud Functions are deployed, and the configured Storage bucket is unavailable. A Functions deployment preflight reported that Blaze is required; billing was not enabled. Profile triggers, profile sync, course management, enrollment, progress, server-side quiz grading, certificate, and admin/teacher callables exist in source and are wired into the relevant pages, but cannot work in production until deployed. Callables enforce App Check; the site key and Console enforcement are not configured, so the shared client fails closed. New Auth accounts must not be assumed to have a `users/{uid}` profile or a server-assigned role. Firestore rules source denies client profile creation/deletion, restricts profile reads/updates, and denies unmatched collections; deployed-rule parity and authenticated tests remain NOT VERIFIED. Storage source rules are inactive while the bucket is unavailable. See [docs/FIREBASE_SETUP.md](./docs/FIREBASE_SETUP.md), [docs/FIREBASE_SECURITY.md](./docs/FIREBASE_SECURITY.md), and [docs/DATABASE_STRUCTURE.md](./docs/DATABASE_STRUCTURE.md).
+
+**Current release gate:** **NOT PRODUCTION READY.** See [CWU_PRODUCTION_RELEASE_REPORT.md](./CWU_PRODUCTION_RELEASE_REPORT.md) for current test evidence, Vercel route/CSP blockers, billing state, and remaining backend requirements.
 
 ## Public navigation and learner flow
 
 Public page headers expose only Home, Courses, Contact, Login, and Register. The footer is limited to Courses, Contact, Privacy, and Terms. Dashboard, admin, study, assessment, certificate, and other demo pages are not linked as top-level public navigation.
 
-The homepage introduces CWU, shows catalog-derived course/topic/module totals and six featured courses, summarizes four learning benefits, explains a six-step intended learner journey, and ends with a course/contact call to action. It does not claim learner or certificate totals, which are not tracked. Its security-learning visual is a labeled, illustrative preview. The catalog links to course details; course details offer login/register links and contextual assessment previews. A successful demo login or registration reveals a link to the sample student dashboard and carries the selected course into that preview. Public registration is learner-focused; admin and teacher roles are not offered in the registration form or public navigation.
+The homepage introduces CWU and clearly states that live course listings are unavailable; illustrative learning visuals are labeled as samples. Topic cards link to the backend catalog rather than to hard-coded sample course IDs. Course pages request backend records and do not create client-side enrollments. A verified Firebase Auth session does not grant protected access or create a learner profile. Public registration is learner-focused; admin and teacher roles are not offered in the registration form or public navigation.
 
-The supplied Firebase Web app config activates account registration, email verification, sign-in, persistence, sign-out, and password-reset flows. Registration and reset requests were verified in a live browser; successful sign-in/logout still require a verified account and a retry after Firebase's rate limit clears. Without config, the previous demo form behavior remains. Enrollment/progress is not stored, and the dashboard is not access-controlled. Course cards clearly indicate that progress is not tracked in this demo. The final-exam link currently opens a clearly labeled sample using the same 10 practice questions; it does not represent a real final exam. Certificate previews are not issued or restricted by completion status. Production LMS behavior requires server-enforced authorization, enrollment, assessment, and certificate services.
+When the Firebase Web app configuration is present, registration creates a Firebase Authentication account and requests email verification; it does not create a CWU learner profile in the client. Profile lifecycle triggers and all LMS callables exist only in source and are not deployed. The pages call these operations through an App Check-aware client, which rejects calls locally while the site key is absent. Firebase client authentication is not backend authorization. Without Firebase configuration or when initialization fails, the auth controls stay disabled and report an error. The dashboard does not present sample records as learner data. Practice quiz scores and certificate-generator output are explicitly non-official previews. Production LMS behavior requires App Check setup, emulator-tested server enforcement, deployment, and independent verification.
 
 ## Run locally
 
@@ -110,21 +111,20 @@ Open `index.html` in a browser, or serve the project root with any static file s
 
 ## Demo authentication and data warning
 
-The current Firebase configuration and Auth registration/reset requests work in a local HTTP browser. The test sign-in attempt was rate-limited, so login/logout still need an end-to-end retry after the created account's email is verified. The pages do not silently fall back to claiming successful authentication. Even after Auth is enabled, this frontend does not yet authorize dashboard roles or protect sample dashboard data. Never enter a password used on another service.
+The Firebase configuration is present, but no real test inbox or account was provided, so no account was created and positive registration, email delivery, login, or logout persistence was not tested. A safe sign-in attempt using a reserved `.invalid` address and dummy-only password was rejected by Firebase with `INVALID_LOGIN_CREDENTIALS`. The page does not claim that sign-in succeeded when Firebase rejects it. A created Auth account would not imply a CWU profile or assigned role. Never enter a password used on another service.
 
-The course catalog and demo-user list are static sample data. Quiz attempts and admin edits exist only in the current page session; contact forms do not send messages. Dashboard metrics, certificates, QR placeholders, and verification records are illustrative and are not production records or credentials. Theme preference may be saved in browser local storage; local storage is not authentication or secure data storage.
+Legacy course and demo-user datasets remain in the repository but are not rendered as authoritative course or learner records. Practice quiz scores are local-only and non-official; the certificate generator creates only a preview. The admin/teacher page no longer exposes in-memory admin records. Contact forms do not send messages. Theme preference may be saved in browser local storage; local storage is not authentication or secure data storage.
 
 Security learning content is intended for authorized labs, legal testing, and systems the learner owns or has explicit permission to assess.
 
 ## Development phases
 
-1. HTML, CSS, and JavaScript frontend prototype — current.
-2. Refine frontend architecture and page flows.
-3. Introduce React only when migration is requested.
-4. Design and implement backend APIs and data storage.
-5. Add authentication, authorization/RBAC, LMS workflows, and admin/teacher management.
-6. Implement trusted certificate issuance and verification.
-7. Review production security, accessibility, and deployment.
+1. Static HTML, CSS, and JavaScript frontend — current public site.
+2. Firebase Auth client is implemented; positive account lifecycle tests remain unverified.
+3. LMS callable source and page integrations exist, but Functions, App Check, and Storage prerequisites block production use.
+4. Test rules, identity ownership, roles, course enrollment, grading, and certificates in non-production emulators/accounts.
+5. Do not enable billing or deploy backend services without explicit authorization.
+6. Complete accessibility, mobile, performance, and release verification before production claims.
 
 The current folder structure keeps shared styles, page scripts, and reusable data separate to make a future migration into React components, pages, features, services, and utilities easier. React is not installed.
 
@@ -153,10 +153,10 @@ Statuses describe roadmap intent only; no planned item should be mistaken for a 
 | Discussion forum | PLANNED |
 | Mentorship | PLANNED |
 | Live classes | PLANNED |
-| Payments | DEFERRED |
-| Backend API | PLANNED |
-| Database | PLANNED |
+| Payments | NOT CONFIGURED |
+| LMS callable backend | IMPLEMENTED IN SOURCE; NOT DEPLOYED |
+| Firestore database | CONFIGURED; RULE/INDEX PARITY NOT VERIFIED |
 | Global search and command palette | PLANNED |
 | React migration | PLANNED |
 
-AI, payments, real identity/authorization, a backend/database, and service workers are intentionally not implemented in this frontend phase. Never expose API keys or secrets in client-side scripts.
+Payments have no provider, transaction, or server-side verification flow and must remain unavailable until these are implemented. AI and service workers are intentionally not implemented. Trusted LMS authorization exists only in source callables and must not be treated as available until App Check, billing authorization, deployment, and independent backend tests are complete. Never expose private API secrets in client-side scripts; Firebase Web configuration is public client configuration, not an Admin credential.

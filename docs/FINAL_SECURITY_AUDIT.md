@@ -1,5 +1,7 @@
 # CWU final security audit
 
+> Historical snapshot. Later live checks and current blockers are recorded in [CWU_PRODUCTION_RELEASE_REPORT.md](../CWU_PRODUCTION_RELEASE_REPORT.md). Do not use the evidence below as current deployment status.
+
 **Assessment date:** 2026-10-18  
 **Project:** `studio-100351834-51432`  
 **Scope:** Repository source, Firebase configuration and rule files, account/profile code, static HTML/JavaScript/CSS, Hosting configuration, and existing QA evidence. No production writes or deployment were performed.

@@ -1,4 +1,4 @@
-import { auth, onAuthStateChanged } from '../firebase/auth-client.js';
+import { auth, onAuthStateChanged, signOut } from '../firebase/auth-client.js';
 import { getCurrentUserProfile } from '../firebase/profiles.js';
 
 const dashboard = document.querySelector('.dashboard-main');
@@ -29,7 +29,7 @@ const profileFields = new Map();
 [
   ['Name', 'name'],
   ['Email', 'email'],
-  ['Role', 'role'],
+  ['Profile role (informational only)', 'role'],
   ['Status', 'status'],
   ['Student ID', 'studentId']
 ].forEach(([label, field]) => {
@@ -46,15 +46,27 @@ dashboard.prepend(section);
 let authStateVersion = 0;
 onAuthStateChanged(auth, async (user) => {
   const currentVersion = ++authStateVersion;
-  section.hidden = !user;
-  if (demoProfile) demoProfile.hidden = Boolean(user);
-  if (!user) {
+  const verifiedUser = Boolean(user && user.emailVerified);
+  section.hidden = !verifiedUser;
+  if (demoProfile) demoProfile.hidden = verifiedUser;
+  if (!verifiedUser) {
     if (pageHeading) pageHeading.textContent = defaultHeading;
+    profileFields.forEach((value) => {
+      value.textContent = '';
+    });
+    status.textContent = '';
+    status.classList.remove('error');
+    if (user) {
+      status.textContent = 'Email verification is required. Signing out of the unverified session.';
+      signOut(auth).catch((error) => {
+        console.error('Could not sign out an unverified dashboard session.', error.code || 'sign-out-failed');
+      });
+    }
     return;
   }
 
   if (pageHeading) pageHeading.textContent = `Welcome, ${user.displayName || user.email || 'learner'}`;
-  status.textContent = 'Loading your profile...';
+  status.textContent = 'Checking whether a CWU learner profile is available...';
   try {
     const profile = await getCurrentUserProfile();
     if (currentVersion !== authStateVersion || auth.currentUser?.uid !== user.uid) return;
@@ -65,12 +77,12 @@ onAuthStateChanged(auth, async (user) => {
     profileFields.get('status').textContent = profile.status || 'Unknown';
     profileFields.get('studentId').textContent = profile.studentId || 'Not assigned';
     if (pageHeading) pageHeading.textContent = `Welcome, ${profile.name || profile.displayName || user.displayName || 'learner'}`;
-    status.textContent = 'Profile loaded from your private CWU account record.';
+    status.textContent = 'Profile loaded from your CWU account record. The displayed role is informational only; backend authorization is not configured.';
     status.classList.remove('error');
   } catch (error) {
     if (currentVersion !== authStateVersion) return;
     console.error('Could not load the dashboard profile.', error.code || error.message || 'profile-load-failed');
-    status.textContent = 'Your account is signed in, but its profile could not be loaded. Try again shortly or contact support.';
+    status.textContent = 'Firebase sign-in is active, but the CWU learner profile is unavailable. Learning records on this page remain sample data.';
     status.classList.add('error');
   }
 });

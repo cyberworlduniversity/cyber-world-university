@@ -1,5 +1,6 @@
 import { doc, getDoc, serverTimestamp, updateDoc } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
 import { auth, db } from './auth-client.js';
+import { callLms } from './lms-client.js';
 
 const profileRetryDelays = [0, 250, 500, 1000, 2000, 3000, 5000];
 
@@ -10,6 +11,11 @@ function delay(milliseconds) {
 export async function getCurrentUserProfile() {
   const user = auth.currentUser;
   if (!user) throw new Error('You must be signed in to read your profile.');
+
+  await callLms('syncCurrentUserProfile');
+  if (auth.currentUser?.uid !== user.uid) {
+    throw new Error('Your sign-in session changed while the profile was synchronizing.');
+  }
 
   const profileRef = doc(db, 'users', user.uid);
   let profile;
@@ -23,18 +29,6 @@ export async function getCurrentUserProfile() {
 
   const data = profile.data();
   if (data.uid !== user.uid) throw new Error('The loaded profile does not match the signed-in account.');
-
-  const name = [data.name, data.displayName, user.displayName]
-    .find((value) => typeof value === 'string' && value.trim()) || '';
-  if (data.name !== name || data.displayName !== name) {
-    await updateDoc(profileRef, {
-      name,
-      displayName: name,
-      updatedAt: serverTimestamp()
-    });
-    data.name = name;
-    data.displayName = name;
-  }
 
   return data;
 }

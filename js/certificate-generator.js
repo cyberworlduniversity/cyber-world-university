@@ -35,48 +35,6 @@
   let signatureObjectUrl = '';
   let studentPhotoObjectUrl = '';
 
-  const certificateDescriptions = {
-    'Certificate of Completion': [
-      'The recipient has completed the learning modules and program requirements presented for this course.',
-      'This certificate is a local visual preview and does not confirm attendance, assessment, or academic credit.'
-    ],
-    'Certificate of Excellence': [
-      'The recipient has successfully fulfilled the academic requirements, practical assessments, and ethical standards established by Cyber World University and is recognized for completing the specified training program.',
-      'This certificate acknowledges achievement in identifying, analyzing, and mitigating security vulnerabilities while adhering to authorized testing practices and professional cybersecurity standards.'
-    ],
-    'Certificate of Achievement': [
-      'The recipient is recognized for dedication, demonstrated learning, and completion of the selected educational program.',
-      'This local preview does not independently confirm assessment outcomes, credentials, or academic standing.'
-    ],
-    'Professional Cybersecurity Certification': [
-      'The recipient is presented as having completed the selected cybersecurity learning program.',
-      'Professional certification requires formal review and approval by an authorized issuing body; this local preview does not provide that approval.'
-    ],
-    'Ethical Hacking Training Certificate': [
-      'The recipient is presented as having completed ethical hacking training focused on responsible, authorized security practice.',
-      'Security testing must only be performed in approved labs or on systems for which explicit permission has been granted.'
-    ],
-    'Web Application Penetration Testing Certificate': [
-      'The recipient is presented as having completed training in web application security assessment and defensive remediation.',
-      'This preview is not proof of competence or authorization to assess any real system.'
-    ],
-    'Network Security Certificate': [
-      'The recipient is presented as having completed learning in network security principles and defensive practice.',
-      'This local preview does not validate course completion or any external qualification.'
-    ],
-    'Digital Forensics Certificate': [
-      'The recipient is presented as having completed learning in digital forensics principles and evidence-aware practice.',
-      'This local preview does not validate course completion, practical experience, or an external qualification.'
-    ],
-    'Python for Security Certificate': [
-      'The recipient is presented as having completed learning in Python programming for defensive security workflows.',
-      'This local preview does not validate course completion or any external qualification.'
-    ],
-    'Cybersecurity Fundamentals Certificate': [
-      'The recipient is presented as having completed foundational learning in cybersecurity principles and defensive practice.',
-      'This local preview does not validate course completion or any external qualification.'
-    ]
-  };
   const certificateHeadings = {
     'Certificate of Completion': ['CERTIFICATE', 'OF COMPLETION'],
     'Certificate of Excellence': ['CERTIFICATE', 'OF EXCELLENCE'],
@@ -129,7 +87,6 @@
 
   function updatePreview() {
     const selectedType = fields.certificateType.value;
-    const wording = certificateDescriptions[selectedType] || certificateDescriptions['Certificate of Completion'];
     const heading = certificateHeadings[selectedType] || certificateHeadings['Certificate of Completion'];
     outputs.headingMain.textContent = heading[0];
     outputs.headingSub.textContent = heading[1];
@@ -139,8 +96,8 @@
     outputs.issueDate.textContent = formattedDate(fields.issueDate.value);
     outputs.signatoryName.textContent = fields.signatoryName.value.trim() || 'Signatory Name';
     outputs.signatoryRole.textContent = fields.signatoryRole.value.trim() || 'Signatory Designation';
-    outputs.firstCopy.textContent = wording[0];
-    outputs.secondCopy.textContent = wording[1];
+    outputs.firstCopy.textContent = 'Preview/sample only. This text does not assert course completion, an award, or a professional qualification.';
+    outputs.secondCopy.textContent = 'No official certificate has been issued, registered, or verified by this frontend.';
     previewStatus.textContent = 'Preview updated';
   }
 

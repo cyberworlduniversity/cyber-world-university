@@ -74,7 +74,7 @@
       const heading = document.createElement('h3');
       heading.textContent = course.title;
       const details = document.createElement('ul');
-      [`${course.duration}`, `${course.topics} topics`, course.certificate ? 'Certificate available' : 'No certificate'].forEach((value) => {
+      [`${course.duration}`, `${course.topics} topics`, course.certificate ? 'Certificate information listed' : 'No certificate information listed'].forEach((value) => {
         const item = document.createElement('li');
         item.textContent = value;
         details.append(item);
@@ -167,7 +167,7 @@
           course.duration,
           `${course.topics} topics`,
           `${course.modules} modules`,
-          course.certificate ? 'Certificate available' : 'No certificate',
+          course.certificate ? 'Certificate information listed' : 'No certificate information listed',
           course.learningType
         ].forEach((value) => {
           const item = document.createElement('li');
@@ -247,7 +247,7 @@
       document.querySelector('.page-content .content-grid').before(gallery);
     }
     const metadata = document.getElementById('course-meta');
-    [selectedCourse.category, selectedCourse.level, selectedCourse.duration, `${selectedCourse.topics} topics`, `${selectedCourse.modules} modules`, selectedCourse.certificate ? 'Certificate available' : 'No certificate'].forEach((value) => {
+    [selectedCourse.category, selectedCourse.level, selectedCourse.duration, `${selectedCourse.topics} topics`, `${selectedCourse.modules} modules`, selectedCourse.certificate ? 'Certificate information listed' : 'No certificate information listed'].forEach((value) => {
       const item = document.createElement('li');
       item.textContent = value;
       metadata.append(item);
@@ -276,7 +276,7 @@
     const outline = selectedCourse.id === 'cwu-cyber-001'
       ? ['Computer and networking fundamentals', 'Operating systems and Linux basics', 'Security concepts, threats, malware, and phishing', 'Password security, authentication, access control, and encryption', 'Web and network security, social engineering, and vulnerability management', 'Risk management, security monitoring, incident response, and digital forensics', 'Threat intelligence, security policies, privacy, and career paths', 'Final review and knowledge check']
       : selectedCourse.id === 'cwu-kali-002'
-        ? ['Phase 1 — Kali/Linux Fundamentals', 'Phase 2 — System & Networking Fundamentals', 'Phase 3 — Ethical Hacking Tools in isolated authorized labs', 'Phase 4 — Security Testing & Analysis', 'Phase 5 — Practical Ethical Hacking with written permission', 'Final exam and certificate eligibility overview']
+        ? ['Phase 1 — Kali/Linux Fundamentals', 'Phase 2 — System & Networking Fundamentals', 'Phase 3 — Ethical Hacking Tools in isolated authorized labs', 'Phase 4 — Security Testing & Analysis', 'Phase 5 — Practical Ethical Hacking with written permission', 'Final assessment and certificate information preview']
         : [`${selectedCourse.title}: core concepts`, 'Tools, terminology, and safe workflows', 'Guided learning activities and study material', 'Knowledge check and final review'];
     const list = document.getElementById('course-outline');
     outline.forEach((topic) => {

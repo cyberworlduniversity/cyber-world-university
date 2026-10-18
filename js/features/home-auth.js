@@ -7,7 +7,7 @@ if (window.CWU_FIREBASE && window.CWU_FIREBASE.isConfigured
   import('../firebase/auth-client.js')
     .then(({ auth, onAuthStateChanged }) => {
       onAuthStateChanged(auth, (user) => {
-        const signedIn = Boolean(user);
+        const signedIn = Boolean(user && user.emailVerified);
         loginLink.hidden = signedIn;
         registerLink.hidden = signedIn;
         dashboardLink.hidden = !signedIn;

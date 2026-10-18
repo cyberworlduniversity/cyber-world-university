@@ -1,25 +1,25 @@
 # Firebase security model
 
-## Implemented boundary
+## Repository rule boundary (deployment not verified)
 
 Security is enforced by Firebase rules and trusted Cloud Functions, not by hiding pages or checking roles in browser code.
 
 | Resource | Current access |
 | --- | --- |
-| `users/{uid}` | Repository rules allow the signed-in owner to read one profile and update only matching `name`/`displayName`, `photoURL`, and `updatedAt`. A user with the trusted `admin` custom claim can list profiles. Clients cannot create, delete, or change role/status/email fields. |
-| Other Firestore documents | Denied. |
-| `users/{uid}/avatar/avatar.{png,jpg,jpeg,webp}` | Owner-only read, create, update, and delete; uploads must be image/png, image/jpeg, or image/webp and smaller than 5 MiB. |
-| Other Storage objects | Denied. |
+| `users/{uid}` | Source rules allow the signed-in owner to read one profile and update only matching `name`/`displayName`, `photoURL`, and `updatedAt`. A user with the trusted `admin` custom claim can list profiles. Clients cannot create, delete, or change role/status/email fields. Authenticated owner and role cases are not live-tested; deployed-rule parity is unknown. |
+| Other Firestore documents | Denied by repository source rules. Only specific unauthenticated probes have been tested live. |
+| `users/{uid}/avatar/avatar.{png,jpg,jpeg,webp}` | Source rules allow owner-only read, create, update, and delete; uploads must be image/png, image/jpeg, or image/webp and smaller than 5 MiB. The configured bucket does not exist, so this boundary is not live-tested. |
+| Other Storage objects | Denied by repository source rules; Storage is not configured in the project. |
 
-New public registrations receive the `student` role claim from the Auth creation trigger. The profile document is created by the Admin SDK, which bypasses client rules. The Auth deletion trigger removes that user's profile. Client-supplied role values are never accepted. `teacher` or `admin` claims must be granted by a trusted operator using the Admin SDK in a secure, non-browser environment. No self-service role assignment or admin UI exists.
+The Auth creation trigger in source would assign new public registrations the `student` role claim and create a profile using the Admin SDK. The source-only `syncCurrentUserProfile` callable uses the authenticated UID, reads the Firebase Auth user record, and synchronizes a profile without accepting a client UID or role. Source-only LMS callables also define assigned-teacher/admin authorization for course and quiz management, server-side enrollment/progress/grading/certificate operations, and admin role changes. No Cloud Functions are deployed in the Firebase project; a dry-run deployment check reported that Functions require the Blaze plan. Billing was not enabled. Do not claim new registrations currently receive a server-assigned role/profile or that these callables provide a live authorization boundary. The Auth deletion trigger and all callable operations remain source-only. `teacher` and `admin` claims must be granted through a trusted operator or an already-authorized server callable, never from browser code.
 
 Custom claims can take effect in an ID token only after it is refreshed. Rules that depend on a role claim must fail closed when the claim is absent or unrecognized.
 
-## Approved future boundary (not deployed)
+## Source-only backend boundary (not deployed)
 
 The approved data design is documented in `docs/DATABASE_STRUCTURE.md`. It covers profiles, public categories and published courses, nested modules/lessons/material metadata, owner-scoped enrollment/progress/notifications, published articles and announcements, reviews, and server-protected quiz keys/attempts, certificates, contact messages, and audit logs.
 
-This boundary is a design only. Every collection other than the currently implemented user profile remains denied by repository rules. The enabled Firestore service returned `permission-denied` for an unauthenticated read of an unmatched path, confirming the deny-by-default boundary is active in the project. Do not add broad authenticated-user or public wildcard rules to make unfinished pages work. Assessment answers, scores, certificate eligibility, contact submissions, and audit records must be handled by trusted server-side code before these features are exposed.
+The callable implementation is source only. Every collection other than the user-profile path remains denied to browser clients by repository source rules; the Admin SDK callables bypass client rules and require emulator authorization/integration tests. Live unauthenticated read, create, update, and delete probes returned HTTP 403 `PERMISSION_DENIED`; these probes do not establish authenticated owner isolation, callable transaction behavior, or deployed-rule parity. Do not add broad authenticated-user or public wildcard rules to make unfinished pages work. Assessment answers, scores, certificate eligibility, contact submissions, and audit records must remain server-side.
 
 Teacher access must be constrained to courses assigned to their trusted UID/claim-backed assignment. Student reads of other students' profiles or progress remain denied. Public certificate verification must not expose the certificate collection directly; use a trusted endpoint that returns only minimum public verification fields. Contact and audit collections remain server-only for writes, and quiz correct answers must never be present in learner-readable quiz documents.
 
@@ -27,10 +27,10 @@ Teacher access must be constrained to courses assigned to their trusted UID/clai
 
 Before deploying rules or Functions to a real project:
 
-1. Enable Cloud Firestore for the intended Firebase project and verify its ID.
+1. Verify the intended Firebase project ID. The `(default)` Firestore database already exists; do not create another database.
 2. Install Java 21+ and run Firestore Emulator tests for owner access, cross-user denial, unauthenticated denial, role escalation denial, query constraints, assigned-teacher boundaries, private quiz keys, and server-only collections. Keep the existing Storage rules unchanged.
 3. Review each allowed collection/path and confirm no catch-all rule grants access.
 4. Confirm trusted role assignment and server-only writes use Admin SDK credentials outside Hosting and browser code.
 5. Review Cloud Functions billing requirements and obtain project-owner approval.
 
-The updated repository rules have not yet been compiled or exercised in the Emulator Suite because the current machine's Java is version 8. This change has not deployed the rules or Functions to the production project.
+The source rules compiled successfully during a Firebase dry-run preflight, but have not been exercised in the Emulator Suite because the current machine has Java 17 and the current emulator setup requires Java 21+. The preflight did not deploy rules; Functions deployment is blocked by the current Firebase plan. No production rules or Functions were deployed.
