@@ -4,10 +4,11 @@
 
 **NOT PRODUCTION READY**
 
-This is a cumulative no-billing hardening report updated 2026-10-18 for the existing Firebase project
-`studio-100351834-51432` and the current repository. The Vercel frontend deployment
-was verified live from commit `a1371e3e2a5f10b747b7ae204f7cc5e5b6cf65c8`; this does
-not imply deployed Firebase backend services or deployed Firestore rule parity.
+This is a cumulative no-billing hardening report for the existing Firebase project
+`studio-100351834-51432` and the current repository. The latest confirmed Vercel
+production deployment is commit `54de93a6c524ef366bb3d33a6165718702e61332`;
+current route, browser, and header checks were repeated against the live domain.
+This does not imply deployed Firebase backend services or deployed Firestore rule parity.
 
 No billing was enabled, no account was created, and no production data was written.
 No Firebase backend service (Functions, Storage, Firestore rules, or indexes) was
@@ -23,10 +24,10 @@ does not undo or reclassify any earlier Hosting-only release.
 | Live Firebase Auth negative test | PASS | A reserved `.invalid` address and dummy-only password received HTTP 400 `INVALID_LOGIN_CREDENTIALS`; no account was created. |
 | Positive registration, verification, login, reset, logout | NOT VERIFIED | No real test inbox or account was supplied. |
 | Server authorization / RBAC | NOT CONFIGURED | Callable source checks Auth context, roles, ownership, and input, but no Cloud Functions are deployed. |
-| Firestore rules | NOT VERIFIED | Source is deny-by-default outside restricted `users/{uid}` access. One live unauthenticated read returned 403; authenticated isolation, update, delete, and deployed-rule parity were not tested. |
-| Cloud Functions | NOT CONFIGURED | Source callables are wired into frontend pages but are undeployed. Firebase deployment preflight requires Blaze. |
-| App Check | NOT CONFIGURED | Callable source enforces App Check, but no site key or Console enforcement is configured. The frontend fails closed before calling backend operations. |
-| Storage | NOT CONFIGURED | The configured bucket is unavailable/not set up; uploads and Storage authorization were not tested. |
+| Firestore rules | NOT VERIFIED | Source denies direct client access except restricted `users/{uid}` access. A live unauthenticated read returned 403; the `(default)` database exists, but authenticated isolation, deployed-rule parity, and index deployment were not verified. |
+| Cloud Functions | NOT CONFIGURED | Source exports 27 Functions; a read-only Firebase Functions listing returned no deployed Functions. The source requires App Check. Firebase deployment preflight requires Blaze. |
+| App Check | NOT CONFIGURED | Callable source enforces App Check, but the configured web site key is empty. The frontend fails closed before calling backend operations. |
+| Storage | NOT CONFIGURED | A read-only request to the configured bucket endpoint returned HTTP 404. Upload and Storage-rule behavior are unavailable and untested. |
 | Courses, enrollment, progress | NOT CONFIGURED | UI calls backend operations; no Functions are deployed and no production course records were seeded. Paid enrollment is disabled. |
 | Quiz grading | NOT CONFIGURED | Practice scores are explicitly non-official. Backend grading source and unit tests exist but are not deployed or integration-tested. |
 | Certificates | NOT CONFIGURED | The generator is a local preview. Issuance and verification UI use backend callables, which are unavailable; verification codes are not accepted from URLs. |
@@ -38,10 +39,37 @@ does not undo or reclassify any earlier Hosting-only release.
 | Secret exposure scan | PASS | Bounded working-tree scan found the expected public Firebase Web API key, but no private-key marker or common private/payment token pattern. Git history and deployed secret stores were not audited. |
 | Local browser routes | PASS | Local smoke covered home, login, registration, courses, course details, dashboard, admin, quiz, certificates, and verification. No uncaught page errors were observed. |
 | Live Vercel routes | PASS | The homepage, all eight required short routes, and all eight retained `/pages/*.html` routes returned HTTP 200 after deployment. |
-| Vercel production deployment | PASS | Authenticated Vercel dashboard shows project `cyber-world-university-2026`, deployment ID `7DmvKDGUe2wwUvi7KF7H6tGKyRVh`, status Ready, production domain `cyber-world-university-2026.vercel.app`, connected repository `cyberworlduniversity/cyber-world-university`, branch `main`, and commit `a1371e3e2a5f10b747b7ae204f7cc5e5b6cf65c8`. |
+| Vercel production deployment | PASS | Authenticated Vercel dashboard showed project `cyber-world-university-2026`, deployment ID `7daj8n22wGwbHeajuLxCM9zf6hTW`, status Ready, production domain `cyber-world-university-2026.vercel.app`, connected repository `cyberworlduniversity/cyber-world-university`, branch `main`, and commit `54de93a6c524ef366bb3d33a6165718702e61332`. This follow-up rechecked the live routes, browser loading, and headers. |
 | Live CWU implementation | PASS | Live home and pages reference the current Firebase auth and LMS page modules; legacy admin/certificate demo module references are absent. Certificate verification displays trusted backend verification messaging, not the old sample-verification form. |
 | Live browser smoke | PASS | Desktop and mobile browser checks covered home and all eight required short routes. All returned HTTP 200, with no uncaught page errors, console errors, or failed HTTP responses. |
 | Mobile, accessibility, performance | NOT VERIFIED | No complete device, accessibility, or performance audit was run in this pass. |
+
+## Current backend source/configuration review
+
+These findings distinguish source checks from deployed behavior. Firebase Functions use
+the Admin SDK and therefore bypass Firestore client rules; the callable guards, rather
+than the Firestore rules, are the authorization boundary for those operations.
+
+| Capability / data | Source boundary reviewed | Current evidence |
+| --- | --- | --- |
+| Auth/profile | `createUserProfile` assigns student by default unless a trusted custom claim already exists. Profile sync uses the authenticated UID; client profile creation/deletion is denied by rules. | Functions are undeployed; no positive registration, verification, login, or profile-trigger test was performed. |
+| Firestore `users/{uid}` | Owner/admin `get`; admin-only `list`; owner-only update restricted to `name`, `displayName`, `photoURL`, and server-time `updatedAt`; direct create/delete denied. Admin is derived from the signed Auth token claim. | Live anonymous read denied (HTTP 403); owner/cross-user and deployed-rule tests unavailable. |
+| Firestore `courses/{courseId}` and `lessons` / `quizzes` | Direct client reads/writes denied. Published course and enrolled published lesson/quiz access is mediated by callables; admin/assigned teacher mutations are checked server-side. | Source reviewed; Functions undeployed and no production catalogue/records verified. |
+| Firestore `enrollments` | Direct client access denied. Enrollment uses the caller UID, a transaction, and permits only free published courses; paid enrollment fails closed. Teacher/admin roster reads check role and course assignment. | Source reviewed; no callable is deployed. |
+| Firestore `progress` | Direct client access denied. Progress writes use the caller UID and transactionally require active enrollment and a published lesson. | Source reviewed; no live authenticated test. |
+| Firestore `quizAttempts` / `quizAttemptCounters` | Direct client access denied. Attempts are created and graded server-side, bound to caller UID, quiz version, and expiration; submitted scores/eligibility supplied by clients are rejected. | Source unit tests pass; callable and transaction behavior are not deployed/integration-tested. |
+| Firestore `certificates`, `certificateLookup`, `certificateVerification` | Direct client access denied. Issuance checks enrollment and required passed quiz versions; IDs use random bytes, verification codes are hashed, and public verification returns limited fields. Admin revoke checks admin claim. | Source reviewed; issuance, revocation, and verification are unavailable until Functions deploy. |
+| Firestore `auditLogs` | Direct client access denied; source writes audit records after privileged mutations. | Source reviewed; no deployed audit trail or read/retention verification. |
+| Firestore indexes | `firestore.indexes.json` parses and declares indexes for quiz-attempt and progress queries. | No indexes were deployed or queried live. |
+| App Check / Storage | Callables use `enforceAppCheck: true`; client call wrapper refuses calls when the site key is empty. Storage rules restrict avatar paths to owner, image types, and under 5 MiB, with a deny-all catch-all. | App Check key is empty; configured Storage bucket endpoint returned 404. Neither service is usable/verified. |
+| Payments | No payment provider or server-side payment verification is present; positive-price enrollment is rejected. | NOT CONFIGURED. |
+
+All exported callable handlers were reviewed for trusted Auth UID use, role or ownership
+checks, request shape validation, and client-controlled privilege/result fields. Admin
+operations check the token role; teacher content operations also check course assignment.
+No exploitable authorization bypass was established by source review, but source review
+does not prove live authorization. Account role provisioning still requires a trusted
+administrator, and all backend behavior remains unverified until deployed and tested.
 
 ## Security work completed
 
@@ -59,6 +87,14 @@ does not undo or reclassify any earlier Hosting-only release.
 
 - PASS — Cloud Functions tests with Node.js 22.23.3: 8/8 passed (4 callable guard tests and 4 quiz-grading tests).
 - PASS — Cloud Functions lint (`npm run lint`) with Node.js 22.23.3.
+- PASS — Cloud Functions module loaded under Node.js 22.23.3 and exposed 27 expected function exports.
+- PASS — Read-only Firebase CLI reported the project ACTIVE and the `(default)` Firestore Native database present; the Functions list was empty.
+- PASS — Read-only request to the configured Storage bucket returned HTTP 404; Storage is recorded as NOT CONFIGURED, not as a successful storage test.
+- PASS — `firestore.indexes.json` parsed successfully.
+- PASS — Live browser smoke repeated on desktop and a 390×844 mobile viewport: 17/17 desktop URLs and 9/9 mobile short routes returned HTTP 200; no page errors, console errors, or failed requests were observed.
+- PASS — Live response headers repeated; CSP includes `https://*.cloudfunctions.net` and HSTS, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, and `Permissions-Policy` are present.
+- NOT VERIFIED — Firestore emulator rule compilation could not run because the installed Firebase CLI requires Java 21 or later and the available Java runtime is older. No production rules were changed.
+- NOT VERIFIED — Authenticated Firestore owner/cross-user access, Functions authorization, certificate issue/revoke, App Check, and Storage policies remain untested live.
 - PASS — Node.js 22.23.3 parsed 41 repository JavaScript files as modules.
 - PASS — JSON parsing for all 5 repository JSON files outside dependencies.
 - PASS — `git diff --check` after the final source and documentation edits.
