@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Create and print a local, editable Cyber World University certificate preview. Demo only; not an issued credential.">
+  <title>Certificate Generator | Cyber World University</title>
+  <link rel="icon" type="image/png" href="../assets/logos/cwu-logo.png">
+  <link rel="stylesheet" href="../css/certificate.css">
+  <script src="../js/certificate-generator.js" defer></script>
+</head>
+<body>
+  <header class="generator-header no-print">
+    <a class="back-link" href="certificates.html">← Back to certificates</a>
+    <a class="home-link" href="../index.html">
+      <img src="../assets/logos/cwu-logo.png" alt="" width="500" height="500">
+      <span>Cyber World University</span>
+    </a>
+  </header>
+
+  <main class="generator-layout">
+    <section class="editor-panel no-print" aria-labelledby="editor-title">
+      <p class="eyebrow">Local preview tool</p>
+      <h1 id="editor-title">Certificate generator</h1>
+      <p class="editor-intro">Edit the sample details and print, or use your browser's “Save as PDF” option. This tool does not issue, register, or verify certificates.</p>
+
+      <form id="certificate-form">
+        <div class="form-grid">
+          <label class="field field-full" for="student-name">
+            Student full name
+            <input id="student-name" name="studentName" type="text" maxlength="90" autocomplete="name" value="Alex Morgan" required>
+          </label>
+
+          <label class="field field-full" for="course-title">
+            Course or certification title
+            <textarea id="course-title" name="courseTitle" rows="2" maxlength="140" required>Cybersecurity Fundamentals</textarea>
+          </label>
+
+          <label class="field field-full" for="certificate-type">
+            Certificate type
+            <select id="certificate-type" name="certificateType">
+              <option>Certificate of Completion</option>
+              <option selected>Certificate of Excellence</option>
+              <option>Certificate of Achievement</option>
+              <option>Professional Cybersecurity Certification</option>
+              <option>Ethical Hacking Training Certificate</option>
+              <option>Web Application Penetration Testing Certificate</option>
+              <option>Network Security Certificate</option>
+              <option>Digital Forensics Certificate</option>
+              <option>Python for Security Certificate</option>
+              <option>Cybersecurity Fundamentals Certificate</option>
+            </select>
+          </label>
+
+          <label class="field" for="credential-id">
+            Credential ID (demo)
+            <input id="credential-id" name="credentialId" type="text" maxlength="40" value="DEMO-CWU-2026-0001" required>
+          </label>
+
+          <label class="field" for="issue-date">
+            Issue date
+            <input id="issue-date" name="issueDate" type="date" value="2026-10-18" required>
+          </label>
+
+          <label class="field" for="signatory-name">
+            Authorized signatory name
+            <input id="signatory-name" name="signatoryName" type="text" maxlength="80" value="E. HEMANATHAN" required>
+          </label>
+
+          <label class="field" for="signatory-role">
+            Signatory designation
+            <input id="signatory-role" name="signatoryRole" type="text" maxlength="80" value="Founder &amp; CEO" required>
+          </label>
+
+          <label class="field field-full" for="signature-upload">
+            Optional signature image
+            <input id="signature-upload" name="signatureImage" type="file" accept="image/png,image/jpeg,image/webp">
+          </label>
+
+          <label class="field field-full" for="student-photo-upload">
+            Optional student photo
+            <input id="student-photo-upload" name="studentPhoto" type="file" accept="image/png,image/jpeg,image/webp">
+          </label>
+        </div>
+
+        <p class="field-help">Selected images are previewed only in this browser tab and are not uploaded or saved.</p>
+        <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
+
+        <div class="editor-actions">
+          <button class="button button-primary" type="submit">Generate Certificate</button>
+          <button class="button button-secondary" id="update-preview" type="button">Update Preview</button>
+          <button class="button button-secondary" id="print-certificate" type="button">Print Certificate</button>
+          <button class="button button-secondary" id="save-pdf" type="button">Save as PDF</button>
+          <button class="button button-quiet" id="reset-form" type="reset">Reset Form</button>
+        </div>
+      </form>
+      <p class="demo-warning"><strong>Demo only:</strong> a generated page is not an official credential, an authorized issuance, or a verified record. Do not use it to misrepresent qualifications.</p>
+    </section>
+
+    <section class="preview-panel" aria-label="Editable certificate preview">
+      <div class="preview-toolbar no-print">
+        <span>Portrait certificate preview</span>
+        <span id="preview-status" role="status" aria-live="polite">Preview ready</span>
+      </div>
+
+      <article class="certificate" id="certificate-preview" aria-label="Certificate preview, demo only">
+        <div class="corner corner-top-left" aria-hidden="true"></div>
+        <div class="corner corner-top-right" aria-hidden="true"></div>
+        <div class="corner corner-bottom-left" aria-hidden="true"></div>
+        <div class="corner corner-bottom-right" aria-hidden="true"></div>
+        <div class="certificate-inner">
+          <p class="demo-ribbon">Demo preview · Not issued</p>
+
+          <header class="certificate-header">
+            <img class="certificate-logo" src="../assets/logos/cwu-logo.png" alt="Cyber World University logo" width="500" height="500">
+            <p class="institution-name">CYBER WORLD UNIVERSITY</p>
+            <p class="academy-name">CYBER SECURITY ACADEMY</p>
+          </header>
+
+          <div class="ornament ornament-top" aria-hidden="true"><span></span><i>◆</i><span></span></div>
+          <p class="certificate-kicker">ACADEMIC RECOGNITION</p>
+          <h2 class="certificate-heading"><span id="preview-heading-main">CERTIFICATE</span><small id="preview-heading-sub">OF EXCELLENCE</small></h2>
+          <div class="ornament ornament-heading" aria-hidden="true"><span></span><i>❧</i><span></span></div>
+          <p class="awarding-institution">CYBER WORLD UNIVERSITY</p>
+          <p class="award-intro">This certificate is proudly awarded to</p>
+
+          <div class="student-photo-wrap" id="student-photo-wrap" hidden>
+            <img id="preview-student-photo" alt="Student photo preview">
+          </div>
+          <p class="student-name" id="preview-student-name">Alex Morgan</p>
+          <div class="ornament ornament-name" aria-hidden="true"><span></span><i>◆</i><span></span></div>
+
+          <p class="award-copy">in recognition of dedication, demonstrated knowledge, and successful completion of the educational and practical training program in</p>
+          <h2 class="course-name" id="preview-course-title">CYBERSECURITY FUNDAMENTALS</h2>
+          <div class="ornament ornament-course" aria-hidden="true"><span></span><i>◆</i><span></span></div>
+          <p class="certificate-copy" id="preview-copy-one">The recipient has successfully fulfilled the academic requirements, practical assessments, and ethical standards established by Cyber World University and is recognized for completing the specified training program.</p>
+          <p class="certificate-copy" id="preview-copy-two">This certificate acknowledges achievement in identifying, analyzing, and mitigating security vulnerabilities while adhering to authorized testing practices and professional cybersecurity standards.</p>
+
+          <section class="certificate-bottom" aria-label="Credential, seal, and authorized signatory">
+            <div class="credential-details">
+              <div class="detail-item">
+                <span class="detail-icon" aria-hidden="true">ID</span>
+                <span><small>CREDENTIAL ID</small><strong id="preview-credential-id">DEMO-CWU-2026-0001</strong></span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-icon" aria-hidden="true">✦</span>
+                <span><small>DATE OF ISSUE</small><strong id="preview-issue-date">October 18, 2026</strong></span>
+              </div>
+            </div>
+
+            <div class="seal" aria-label="Decorative CWU seal, not an official credential seal">
+              <span class="seal-ring-text">CYBER WORLD UNIVERSITY</span>
+              <span class="seal-core">CWU</span>
+              <span class="seal-stars" aria-hidden="true">★ ★ ★</span>
+              <small>DECORATIVE SEAL</small>
+            </div>
+
+            <div class="signature-block">
+              <small class="signature-label">AUTHORIZED SIGNATURE</small>
+              <img id="preview-signature-image" class="signature-image" alt="" hidden>
+              <span id="signature-placeholder" class="signature-placeholder">Replaceable signature</span>
+              <span class="signature-rule"></span>
+              <strong id="preview-signatory-name">E. HEMANATHAN</strong>
+              <span id="preview-signatory-role">Founder &amp; CEO</span>
+              <span>Cyber World University</span>
+            </div>
+          </section>
+
+          <div class="ornament ornament-footer" aria-hidden="true"><span></span><i>❧</i><span></span></div>
+          <p class="certificate-tagline">Empowering the Next Generation of Cybersecurity Professionals</p>
+          <p class="certificate-disclaimer">VISUAL PREVIEW ONLY · NOT OFFICIALLY ISSUED OR VERIFIED</p>
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,33 @@
+.dashboard-main {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.dashboard-card h2 {
+  font-size: 1.25rem;
+}
+
+.dashboard-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.dashboard-course {
+  display: grid;
+  grid-template-columns: minmax(10rem, 1fr) minmax(8rem, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.dashboard-course:last-child {
+  border-bottom: 0;
+}
+
+@media (max-width: 720px) {
+  .dashboard-course {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+}

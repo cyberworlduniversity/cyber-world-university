@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img">
+  <defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#101932"/><stop offset="1" stop-color="#0d5b6d"/></linearGradient></defs>
+  <rect width="800" height="450" fill="url(#bg)"/><g fill="none" stroke="#7bdff5" stroke-opacity=".14"><path d="M0 90h800M0 180h800M0 270h800M0 360h800M100 0v450M200 0v450M600 0v450M700 0v450"/></g>
+  <rect x="155" y="112" width="337" height="226" rx="17" fill="#08172a" stroke="#4b99b6" stroke-width="4"/><path d="M155 156h337" stroke="#4b99b6" stroke-width="4"/><g fill="#81dff3"><circle cx="186" cy="134" r="7"/><circle cx="211" cy="134" r="7"/><circle cx="236" cy="134" r="7"/></g>
+  <g font-family="monospace" font-size="25" font-weight="700"><text x="196" y="211" fill="#89e6c2">&lt;input</text><text x="196" y="251" fill="#d19cff">  validate=</text><text x="196" y="291" fill="#f2f7ff">  "true" /&gt;</text></g>
+  <path d="m552 136 72 27v59c0 51-34 87-72 106-38-19-72-55-72-106v-59z" fill="#102d48" stroke="#8cecff" stroke-width="6"/><path d="m521 222 22 22 42-51" fill="none" stroke="#8cecff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

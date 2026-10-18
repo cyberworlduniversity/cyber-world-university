@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img">
+  <defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#0b1934"/><stop offset="1" stop-color="#125665"/></linearGradient></defs>
+  <rect width="800" height="450" fill="url(#bg)"/><g fill="none" stroke="#77ddf5" stroke-opacity=".16"><path d="M0 90h800M0 180h800M0 270h800M0 360h800M100 0v450M200 0v450M600 0v450M700 0v450"/></g>
+  <circle cx="400" cy="221" r="136" fill="#102945" stroke="#4cb9d8" stroke-width="4"/><ellipse cx="400" cy="221" rx="62" ry="136" fill="none" stroke="#6bdcf1" stroke-width="3"/><path d="M266 221h268M284 164h232M284 278h232" stroke="#6bdcf1" stroke-width="3" opacity=".75"/>
+  <g fill="#8cf4d1" stroke="#0d2940" stroke-width="8"><circle cx="318" cy="183" r="15"/><circle cx="462" cy="158" r="17"/><circle cx="440" cy="261" r="15"/><circle cx="355" cy="286" r="13"/><circle cx="500" cy="222" r="12"/></g><g fill="none" stroke="#9af1ff" stroke-width="4"><path d="m318 183 144-25 38 64-60 39-85 25M318 183l37 103"/></g>
+  <path d="m547 103 7 22 22 7-22 7-7 22-7-22-22-7 22-7zM242 299l6 18 18 6-18 6-6 18-6-18-18-6 18-6z" fill="#8cf4d1"/>
+</svg>

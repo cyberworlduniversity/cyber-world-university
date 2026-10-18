@@ -1,0 +1,28 @@
+# Dependencies and build output
+node_modules/
+dist/
+build/
+.firebase/
+.runtimeconfig.json
+
+# Logs and local environment
+*.log
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+storage-debug.log
+database-debug.log
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+service-account*.json
+*-service-account*.json
+firebase-adminsdk-*.json
+.vercel/
+
+# Operating-system and editor files
+.DS_Store
+Thumbs.db
+.vscode/
