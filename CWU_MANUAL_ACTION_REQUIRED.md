@@ -99,9 +99,10 @@ authorized.
 
 ## Vercel deployment record
 
-Public Vercel routes, headers, aliases, and browser behavior were verified, but the
-Vercel dashboard returned 403/Not authorized, so the exact deployed commit and Ready
-state could not be confirmed.
+Public Vercel routes, headers, aliases, and browser behavior were verified. The
+Vercel dashboard redirected to its sign-in page, and no Vercel CLI was installed,
+so account identity, project settings, exact deployed commit, and Ready state could
+not be confirmed.
 
 1. Sign in to the Vercel team that owns `cyber-world-university-2026` and grant the
    authorized operator read access to the project deployments.

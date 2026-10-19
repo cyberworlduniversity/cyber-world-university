@@ -4,7 +4,7 @@ Updated: 2026-10-19
 
 ## Scope and evidence boundary
 
-This map covers tracked project files on `main` at `df03794311b0329b2e4e86f38dd3c4495f04a9c9` and the local hardening changes documented in [CWU_PRODUCTION_READINESS_REPORT.md](./CWU_PRODUCTION_READINESS_REPORT.md). It is source/configuration analysis, not evidence that undeployed backend code or rules are live. Firebase Hosting and Vercel public-site evidence is carried forward from the latest live checks; authenticated behavior and Vercel deployment provenance remain unverified.
+This map inventories 119 tracked project files and covers the existing source plus the hardening changes committed in `ba80120a77876403e2647d4cf79410638704d79b`. The tracked inventory includes 42 `.js` files, 19 HTML documents, 19 SVG assets, 7 CSS files, 2 rulesets, and project configuration/documentation. This is source/configuration analysis, not evidence that undeployed backend code or rules are live. Firebase Hosting and Vercel public-site evidence is recorded in [CWU_PRODUCTION_RELEASE_REPORT.md](./CWU_PRODUCTION_RELEASE_REPORT.md); authenticated behavior and Vercel deployment provenance remain unverified.
 
 ## Frontend
 

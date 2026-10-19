@@ -308,6 +308,25 @@ all attributable to this final follow-up:
 - **Push to GitHub:** Yes. Each implementation/configuration commit was pushed to `origin/main`; the remote branch matched the local branch at final verification.
 - **Billing/data safety:** No billing, real accounts, credentials, or production records were created.
 
+## Authorized full verification follow-up (2026-10-19)
+
+| Area | Status | Evidence |
+| --- | --- | --- |
+| GitHub connection | PASS | Push to `origin/main` succeeded. GitHub API lists `89bf7eeab5502a0e67e59732215b8109a590894c` at the `main` tip, matching the local branch. Repository write access is proven; the exact authenticated account identity was not exposed. |
+| GitHub Actions | NOT APPLICABLE | GitHub API reports zero workflows and zero workflow runs for `main`; no tracked workflow files exist. |
+| Vercel account/project access | NOT VERIFIED | Dashboard URL redirected to Vercel login; no Vercel CLI was installed. Public production domain is reachable, but account identity, project connection, production branch, environment settings, deployed SHA, and Ready state could not be inspected. |
+| Firebase CLI/project access | PASS | Authenticated CLI listed expected project `studio-100351834-51432` as ACTIVE, its default Hosting site, and its active Web app. `.firebaserc` selects the expected project. Firebase Console browser itself redirected to Google sign-in. |
+| Firebase Authentication | NOT VERIFIED | Firebase CLI Auth user export access succeeded, but current Email/Password provider configuration and positive Auth lifecycle were not independently verified. No registration or login was attempted without authorized inboxes/accounts. |
+| Firestore database | PASS | Firebase CLI reports active Native database `(default)` in `asia-south1`, Standard edition/free tier. Anonymous REST read of a non-existent probe under `users/` returned HTTP 403 `PERMISSION_DENIED`; no write or production data mutation was attempted. |
+| Firestore rules and authenticated isolation | NOT VERIFIED | The anonymous denial is live evidence only for that unauthenticated read. Authenticated owner/cross-user/role tests and deployed-rule parity remain unverified. |
+| Firestore indexes | NOT VERIFIED | CLI reports no deployed composite indexes; source defines three. No index deployment was attempted. |
+| Cloud Functions | BLOCKED BY BILLING | CLI reports zero deployed Functions. Source has 27 exports. Existing preflight evidence says Blaze is required; no deployment or billing change was attempted. |
+| Storage | BLOCKED BY BILLING | Configured bucket endpoint returned HTTP 404; no upload or write was attempted. Prior Console evidence indicates bucket provisioning requires billing setup. |
+| App Check | NOT CONFIGURED | Source site key is empty; available CLI has no provider-list command and Firebase Console browser was unauthenticated. No provider was invented or enforcement enabled. |
+| Payments | NOT CONFIGURED | No provider/secrets/checkout/webhook; paid enrollment remains fail-closed in source. |
+
+Code inventory: 119 tracked project files (including 42 tracked JavaScript files and 19 HTML documents). The source analysis records three confirmed source issues fixed (stale privileged roles, certificate lesson acknowledgement eligibility, and duplicate-email account enumeration copy). The available production build is NOT APPLICABLE because there is no root package/build manifest; Functions tests are source-level only.
+
 ## Final status
 
 **NOT PRODUCTION READY**
