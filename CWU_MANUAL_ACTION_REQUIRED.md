@@ -2,11 +2,12 @@
 
 Updated: 2026-10-19
 
-At the time of the 2026-10-19 live check, GitHub `main` was
-`a322887f35a8b85eafccb13cf8856e288125494a`, matching local `main`. This
-manual-action/report follow-up changes documentation only; the application/
-configuration commit remains `a322887`. Firebase Hosting remains deployed from
-configuration commit `c51a569`.
+At the start of the 2026-10-19 final source review, local `main` and
+`origin/main` matched at `df03794311b0329b2e4e86f38dd3c4495f04a9c9`. The final
+review change set includes targeted Functions, Firestore-rule, and authentication
+copy hardening plus source/readiness documentation. Firebase Hosting remains
+deployed from routing/configuration commit `c51a569`; backend changes have not been
+deployed.
 
 No fake identities, credentials, payment records, enrollments, certificates, or
 learning records were created. Firebase remains on the Spark plan. Do not enable
@@ -49,7 +50,8 @@ requests when it is absent. Reconfirm this state in the Console before changing 
 
 Current evidence: a read-only Firebase CLI Functions listing returned no deployed
 functions. The source contains 27 exports; callable endpoints enforce App Check,
-and deployment preflight previously reported Blaze is required.
+privileged operations compare token/Auth/profile role state, and deployment preflight
+previously reported Blaze is required. Recent source changes are not deployed.
 
 1. No Console change is authorized while billing is restricted.
 2. **Do not enable Blaze, add a payment method, or start a paid service.**

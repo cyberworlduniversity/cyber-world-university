@@ -4,6 +4,8 @@ const { getAuth } = require('firebase-admin/auth');
 const { getFirestore, FieldValue, Timestamp } = require('firebase-admin/firestore');
 const { onUserCreated, onUserDeleted } = require('firebase-functions/v2/identity');
 const { onCall, HttpsError } = require('firebase-functions/v2/https');
+const { hasAcknowledgedAllPublishedLessons } = require('./lib/certificate-eligibility');
+const { isCurrentAuthorizedRole } = require('./lib/role-authorization');
 const { gradeAnswers } = require('./lib/quiz-grading');
 
 initializeApp();
@@ -29,10 +31,25 @@ function requireAuth(request, requireVerifiedEmail = true) {
   return request.auth.uid;
 }
 
-function requireRole(request, roles) {
+async function requireRole(request, roles) {
   const uid = requireAuth(request);
   const role = request.auth.token.role;
-  if (!roles.includes(role)) throw new HttpsError('permission-denied', 'You are not authorized to perform this action.');
+  if (!roles.includes(role)) {
+    throw new HttpsError('permission-denied', 'You are not authorized to perform this action.');
+  }
+  const currentRoleMatches = await isCurrentAuthorizedRole(role, roles, async () => {
+    const [currentUser, profileSnapshot] = await Promise.all([
+      getAuth().getUser(uid),
+      firestore.collection('users').doc(uid).get()
+    ]);
+    return {
+      authRole: currentUser.customClaims && currentUser.customClaims.role,
+      profileRole: profileSnapshot.exists ? profileSnapshot.data().role : null
+    };
+  });
+  if (!currentRoleMatches) {
+    throw new HttpsError('permission-denied', 'Your role has changed. Refresh your sign-in and try again.');
+  }
   return { uid, role };
 }
 
@@ -352,7 +369,7 @@ exports.getStudentDashboard = callable(async (request) => {
 });
 
 exports.listTeacherCourses = callable(async (request) => {
-  const { uid, role } = requireRole(request, ['teacher', 'admin']);
+  const { uid, role } = await requireRole(request, ['teacher', 'admin']);
   const query = role === 'admin'
     ? firestore.collection('courses')
     : firestore.collection('courses').where('teacherIds', 'array-contains', uid);
@@ -363,7 +380,7 @@ exports.listTeacherCourses = callable(async (request) => {
 });
 
 exports.listCourseEnrollmentsForTeacher = callable(async (request) => {
-  const { uid } = requireRole(request, ['teacher', 'admin']);
+  const { uid } = await requireRole(request, ['teacher', 'admin']);
   const data = requireObject(request.data);
   requireOnlyKeys(data, ['courseId']);
   const courseId = requireId(data.courseId, 'Course ID');
@@ -394,7 +411,7 @@ exports.listCourseEnrollmentsForTeacher = callable(async (request) => {
 });
 
 exports.teacherGetCourseContent = callable(async (request) => {
-  const { uid, role } = requireRole(request, ['teacher', 'admin']);
+  const { uid, role } = await requireRole(request, ['teacher', 'admin']);
   const data = requireObject(request.data);
   requireOnlyKeys(data, ['courseId']);
   const courseId = requireId(data.courseId, 'Course ID');
@@ -749,6 +766,9 @@ exports.issueCourseCertificate = callable(async (request) => {
   const attemptsQuery = firestore.collection('quizAttempts')
     .where('studentId', '==', uid)
     .where('courseId', '==', courseId);
+  const progressQuery = firestore.collection('progress')
+    .where('studentId', '==', uid)
+    .where('courseId', '==', courseId);
   const certificateKey = `${uid}_${courseId}`;
   const certificateRef = firestore.collection('certificates').doc(certificateKey);
   const profileRef = firestore.collection('users').doc(uid);
@@ -764,13 +784,17 @@ exports.issueCourseCertificate = callable(async (request) => {
       courseSnapshot,
       enrollmentSnapshot,
       attemptsSnapshot,
-      profileSnapshot
+      profileSnapshot,
+      lessonsSnapshot,
+      progressSnapshot
     ] = await Promise.all([
       transaction.get(certificateRef),
       transaction.get(courseRef),
       transaction.get(enrollmentRef),
       transaction.get(attemptsQuery),
-      transaction.get(profileRef)
+      transaction.get(profileRef),
+      transaction.get(courseRef.collection('lessons').where('status', '==', 'published')),
+      transaction.get(progressQuery)
     ]);
     if (existing.exists) return existing.data();
     if (!courseSnapshot.exists || courseSnapshot.data().status !== 'published'
@@ -778,6 +802,11 @@ exports.issueCourseCertificate = callable(async (request) => {
       throw new HttpsError('permission-denied', 'An active enrollment in a published course is required.');
     }
     const course = courseSnapshot.data();
+    const publishedLessonIds = lessonsSnapshot.docs.map((lesson) => lesson.id);
+    const progressRecords = progressSnapshot.docs.map((progress) => progress.data());
+    if (!hasAcknowledgedAllPublishedLessons(publishedLessonIds, progressRecords)) {
+      throw new HttpsError('failed-precondition', 'Acknowledge all published lessons before requesting a certificate.');
+    }
     const requiredQuizIds = Array.isArray(course.requiredQuizIds) ? course.requiredQuizIds : [];
     if (!requiredQuizIds.length || requiredQuizIds.length > 100
       || requiredQuizIds.some((quizId) => typeof quizId !== 'string' || !idPattern.test(quizId))) {
@@ -884,7 +913,7 @@ exports.verifyCourseCertificate = callable(async (request) => {
 });
 
 exports.adminListUsers = callable(async (request) => {
-  requireRole(request, ['admin']);
+  await requireRole(request, ['admin']);
   const data = requireObject(request.data || {});
   requireOnlyKeys(data, ['pageToken']);
   const pageToken = data.pageToken === undefined
@@ -907,7 +936,7 @@ exports.adminListUsers = callable(async (request) => {
 });
 
 exports.adminListCertificates = callable(async (request) => {
-  requireRole(request, ['admin']);
+  await requireRole(request, ['admin']);
   const snapshot = await firestore.collection('certificates')
     .orderBy('issuedAt', 'desc')
     .limit(100)
@@ -927,7 +956,7 @@ exports.adminListCertificates = callable(async (request) => {
 });
 
 exports.adminRevokeCertificate = callable(async (request) => {
-  const { uid } = requireRole(request, ['admin']);
+  const { uid } = await requireRole(request, ['admin']);
   const data = requireObject(request.data);
   requireOnlyKeys(data, ['certificateId']);
   const certificateId = requireCertificateId(data.certificateId);
@@ -950,7 +979,7 @@ exports.adminRevokeCertificate = callable(async (request) => {
 });
 
 exports.adminUpsertCourse = callable(async (request) => {
-  const { uid } = requireRole(request, ['admin']);
+  const { uid } = await requireRole(request, ['admin']);
   const data = requireObject(request.data);
   requireOnlyKeys(data, [
     'courseId', 'title', 'slug', 'description', 'category', 'level', 'duration',
@@ -1010,7 +1039,7 @@ exports.adminUpsertCourse = callable(async (request) => {
 });
 
 exports.adminArchiveCourse = callable(async (request) => {
-  const { uid } = requireRole(request, ['admin']);
+  const { uid } = await requireRole(request, ['admin']);
   const data = requireObject(request.data);
   requireOnlyKeys(data, ['courseId']);
   const courseId = requireId(data.courseId, 'Course ID');
@@ -1023,7 +1052,7 @@ exports.adminArchiveCourse = callable(async (request) => {
 });
 
 exports.teacherUpsertLesson = callable(async (request) => {
-  const { uid } = requireRole(request, ['teacher', 'admin']);
+  const { uid } = await requireRole(request, ['teacher', 'admin']);
   const data = requireObject(request.data);
   requireOnlyKeys(data, ['courseId', 'lessonId', 'title', 'description', 'content', 'videoUrl', 'materialUrl', 'order', 'duration', 'status']);
   const courseId = requireId(data.courseId, 'Course ID');
@@ -1059,7 +1088,7 @@ exports.teacherUpsertLesson = callable(async (request) => {
 });
 
 exports.teacherArchiveLesson = callable(async (request) => {
-  const { uid } = requireRole(request, ['teacher', 'admin']);
+  const { uid } = await requireRole(request, ['teacher', 'admin']);
   const data = requireObject(request.data);
   requireOnlyKeys(data, ['courseId', 'lessonId']);
   const courseId = requireId(data.courseId, 'Course ID');
@@ -1078,7 +1107,7 @@ exports.teacherArchiveLesson = callable(async (request) => {
 });
 
 exports.teacherUpsertQuiz = callable(async (request) => {
-  const { uid } = requireRole(request, ['teacher', 'admin']);
+  const { uid } = await requireRole(request, ['teacher', 'admin']);
   const data = requireObject(request.data);
   requireOnlyKeys(data, [
     'courseId', 'quizId', 'title', 'status', 'questions', 'passPercentage',
@@ -1114,7 +1143,7 @@ exports.teacherUpsertQuiz = callable(async (request) => {
 });
 
 exports.adminSetUserRole = callable(async (request) => {
-  const { uid } = requireRole(request, ['admin']);
+  const { uid } = await requireRole(request, ['admin']);
   const data = requireObject(request.data);
   requireOnlyKeys(data, ['targetUid', 'role']);
   const targetUid = requireText(data.targetUid, 'Target user ID', 128);
@@ -1122,14 +1151,14 @@ exports.adminSetUserRole = callable(async (request) => {
   if (!allowedRoles.has(role)) invalidArgument('Role is invalid.');
   const auth = getAuth();
   const target = await auth.getUser(targetUid);
-  await auth.setCustomUserClaims(targetUid, {
-    ...target.customClaims,
-    role
-  });
   await firestore.collection('users').doc(targetUid).set({
     role,
     updatedAt: FieldValue.serverTimestamp()
   }, { merge: true });
+  await auth.setCustomUserClaims(targetUid, {
+    ...target.customClaims,
+    role
+  });
   await recordAudit('user.role.change', uid, targetUid, { role });
   return { updated: true };
 });

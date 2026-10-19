@@ -6,14 +6,14 @@ Security is enforced by Firebase rules and trusted Cloud Functions, not by hidin
 
 | Resource | Current access |
 | --- | --- |
-| `users/{uid}` | Source rules allow the signed-in owner to read one profile and update only matching `name`/`displayName`, `photoURL`, and `updatedAt`. A user with the trusted `admin` custom claim can list profiles. Clients cannot create, delete, or change role/status/email fields. Authenticated owner and role cases are not live-tested; deployed-rule parity is unknown. |
+| `users/{uid}` | Source rules allow the signed-in owner to read one profile and update only matching `name`/`displayName`, `photoURL`, and `updatedAt`. Admin reads require both the signed `admin` custom claim and the server-maintained profile role to be `admin`, so a stale token alone does not retain admin reads after role revocation. Clients cannot create, delete, or change role/status/email fields. Authenticated owner and role cases are not live-tested; deployed-rule parity is unknown. |
 | Other Firestore documents | Denied by repository source rules. Only specific unauthenticated probes have been tested live. |
 | `users/{uid}/avatar/avatar.{png,jpg,jpeg,webp}` | Source rules allow owner-only read, create, update, and delete; uploads must be image/png, image/jpeg, or image/webp and smaller than 5 MiB. The configured bucket does not exist, so this boundary is not live-tested. |
 | Other Storage objects | Denied by repository source rules; Storage is not configured in the project. |
 
 The Auth creation trigger in source would assign new public registrations the `student` role claim and create a profile using the Admin SDK. The source-only `syncCurrentUserProfile` callable uses the authenticated UID, reads the Firebase Auth user record, and synchronizes a profile without accepting a client UID or role. Source-only LMS callables also define assigned-teacher/admin authorization for course and quiz management, server-side enrollment/progress/grading/certificate operations, and admin role changes. No Cloud Functions are deployed in the Firebase project; a dry-run deployment check reported that Functions require the Blaze plan. Billing was not enabled. Do not claim new registrations currently receive a server-assigned role/profile or that these callables provide a live authorization boundary. The Auth deletion trigger and all callable operations remain source-only. `teacher` and `admin` claims must be granted through a trusted operator or an already-authorized server callable, never from browser code.
 
-Custom claims can take effect in an ID token only after it is refreshed. Rules that depend on a role claim must fail closed when the claim is absent or unrecognized.
+Custom claims can take effect in an ID token only after it is refreshed. Privileged callable operations additionally compare the token role with the current Auth custom claim and server-maintained profile role. Admin Firestore rules require both claim and profile role to match. The role-update callable writes the profile role before updating the custom claim so revocation fails closed if claim update fails. These source defenses are not live verified until deployed and emulator/authenticated tests pass.
 
 ## Source-only backend boundary (not deployed)
 

@@ -13,7 +13,7 @@ import {
 } from '../firebase/auth-client.js';
 
 const messages = {
-  'auth/email-already-in-use': 'An account already exists for this email. Try signing in instead.',
+  'auth/email-already-in-use': 'An account could not be created with these details. If you already have a CWU account, try signing in or requesting a password reset.',
   'auth/configuration-not-found': 'Firebase Authentication is not configured for this project. In Firebase Console, open Authentication and enable Email/Password sign-in.',
   'auth/invalid-credential': 'The email or password is incorrect.',
   'auth/invalid-email': 'Enter a valid email address.',
