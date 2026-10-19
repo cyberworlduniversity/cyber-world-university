@@ -2,6 +2,9 @@
 
 Updated: 2026-10-19
 
+At this update, the latest previously verified repository release/configuration
+commit is `c51a569`; the subsequent `78ddc7c` commit changed the release report only.
+
 No fake identities, credentials, payment records, enrollments, certificates, or
 learning records were created. Firebase remains on the Spark plan. Do not enable
 Blaze or add a billing account unless the project owner explicitly authorizes it.
