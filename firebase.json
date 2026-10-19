@@ -49,6 +49,78 @@
         "destination": "/pages/verify-certificate.html"
       },
       {
+        "source": "/pages/about",
+        "destination": "/pages/about.html"
+      },
+      {
+        "source": "/pages/admin-panel",
+        "destination": "/pages/admin-panel.html"
+      },
+      {
+        "source": "/pages/blog",
+        "destination": "/pages/blog.html"
+      },
+      {
+        "source": "/pages/certificate-generator",
+        "destination": "/pages/certificate-generator.html"
+      },
+      {
+        "source": "/pages/certificates",
+        "destination": "/pages/certificates.html"
+      },
+      {
+        "source": "/pages/contact",
+        "destination": "/pages/contact.html"
+      },
+      {
+        "source": "/pages/course-details",
+        "destination": "/pages/course-details.html"
+      },
+      {
+        "source": "/pages/courses",
+        "destination": "/pages/courses.html"
+      },
+      {
+        "source": "/pages/faq",
+        "destination": "/pages/faq.html"
+      },
+      {
+        "source": "/pages/login",
+        "destination": "/pages/login.html"
+      },
+      {
+        "source": "/pages/privacy",
+        "destination": "/pages/privacy.html"
+      },
+      {
+        "source": "/pages/quizzes",
+        "destination": "/pages/quizzes.html"
+      },
+      {
+        "source": "/pages/register",
+        "destination": "/pages/register.html"
+      },
+      {
+        "source": "/pages/roadmap",
+        "destination": "/pages/roadmap.html"
+      },
+      {
+        "source": "/pages/student-dashboard",
+        "destination": "/pages/student-dashboard.html"
+      },
+      {
+        "source": "/pages/study-materials",
+        "destination": "/pages/study-materials.html"
+      },
+      {
+        "source": "/pages/terms",
+        "destination": "/pages/terms.html"
+      },
+      {
+        "source": "/pages/verify-certificate",
+        "destination": "/pages/verify-certificate.html"
+      },
+      {
         "source": "/pages/dashboard",
         "destination": "/pages/student-dashboard.html"
       },
