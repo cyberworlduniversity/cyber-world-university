@@ -87,6 +87,21 @@ be completed. Keep paid enrollment disabled; do not provide payment secrets in
 source code or chat. Any provider setup requiring billing must be separately
 authorized.
 
+## Vercel deployment record
+
+Public Vercel routes, headers, aliases, and browser behavior were verified, but the
+Vercel dashboard returned 403/Not authorized, so the exact deployed commit and Ready
+state could not be confirmed.
+
+1. Sign in to the Vercel team that owns `cyber-world-university-2026` and grant the
+   authorized operator read access to the project deployments.
+2. Vercel Dashboard → `cyber-world-university-2026` → **Deployments** → inspect the
+   latest Production deployment.
+3. Confirm its Git repository is `cyberworlduniversity/cyber-world-university`,
+   branch is `main`, deployment status is **Ready**, and source commit is the latest
+   `main` commit. If not, redeploy the current `main` commit and repeat the live
+   route/header/browser checks.
+
 ## Already completed without a manual action
 
 - Firebase Hosting was deployed from the verified `main` source using Hosting only.
