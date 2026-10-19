@@ -7,19 +7,26 @@ Updated: 2026-10-19
 **NOT PRODUCTION READY**
 
 This is a cumulative no-billing hardening report for the existing Firebase project
-`studio-100351834-51432` and the current repository. The Firebase Hosting source and
-configuration at `c51a5692b51f4b0a1aa6e88a7ab654a1dc7a9a16` was deployed using
-`--only hosting`; the later `78ddc7c` change only updates release documentation.
-At the time of the 2026-10-19 live check, GitHub `main` was
-`a322887f35a8b85eafccb13cf8856e288125494a`, matching local `main` and
-`origin/main`. This report/manual-action follow-up is documentation-only; that
-commit remains the latest application/configuration commit.
-Live route, browser, and header checks for Firebase Hosting and Vercel are recorded
-below. The current Vercel deployment record/Ready state was not available from its
-dashboard.
-This does not imply deployed Firebase backend services or deployed Firestore rule parity.
+`studio-100351834-51432` and the current repository. The source-hardening commit
+`ba80120a77876403e2647d4cf79410638704d79b` was pushed to `origin/main` and deployed
+to Firebase Hosting with `firebase deploy --only hosting`. All nine core Firebase
+Hosting routes returned HTTP 200; the six required headers were present, the CSP
+included the Cloud Functions origin, and the homepage contained the Firebase config
+and home-auth script references. Browser checks of Home, Login, and Register on
+desktop and Register at 390x844 reported no console errors or failed requests.
 
-The 2026-10-19 source-review follow-up added [CWU_CODEBASE_ANALYSIS.md](./CWU_CODEBASE_ANALYSIS.md) and [CWU_PRODUCTION_READINESS_REPORT.md](./CWU_PRODUCTION_READINESS_REPORT.md), corrected stale-role authorization and certificate lesson-eligibility gaps, and masked duplicate-email registration copy. These source changes have not been deployed to Firebase or Vercel. New tests pass 10/10; no billing, accounts, or production data were changed.
+After the push, all nine core Vercel routes returned HTTP 200. An initial `/courses`
+request had a transient connection reset; the retry succeeded. The required headers
+and Functions-origin CSP were present. Browser checks of Login on desktop and
+Register at 390x844 reported no console errors or failed requests. The Vercel
+deployment's exact source commit and Ready state remain NOT VERIFIED because the
+project dashboard/API is inaccessible.
+
+The Hosting deployment contained static website files only. No Firebase Functions,
+Storage, Firestore rules, or indexes were deployed, and this does not establish
+authenticated backend behavior or deployed-rule parity.
+
+The 2026-10-19 source-review follow-up added [CWU_CODEBASE_ANALYSIS.md](./CWU_CODEBASE_ANALYSIS.md) and [CWU_PRODUCTION_READINESS_REPORT.md](./CWU_PRODUCTION_READINESS_REPORT.md), corrected stale-role authorization and certificate lesson-eligibility gaps, and masked duplicate-email registration copy. The source commit is pushed and its static frontend is deployed to Firebase Hosting; Vercel public routes were smoke-tested, but its exact deployment provenance remains unverified. Functions tests pass 10/10; no billing, accounts, or production data were changed.
 
 The 2026-10-19 read-only Vercel recheck confirmed HTTP 200 for all nine required
 short routes and all ten requested direct `.html` pages, plus the retained dashboard
@@ -174,6 +181,13 @@ administrator, and all backend behavior remains unverified until deployed and te
 - PASS — 2026-10-19 follow-up: secret scan checked tracked file names and high-confidence private-key/service-account/token patterns without printing matched contents; no candidates were found.
 - PASS — 2026-10-19 follow-up: reviewed 27 current Functions exports (2 Auth triggers, 25 callables); no deployment was attempted.
 - NOT VERIFIED — Updated Firestore role checks and certificate eligibility have unit/source evidence only; Firestore Emulator was unavailable with Java 17 and these changes were not deployed.
+- LIVE VERIFIED — After commit `ba80120`, Firebase Hosting returned HTTP 200 for `/`, `/courses`, `/course-details`, `/login`, `/register`, `/student-dashboard`, `/admin-panel`, `/certificates`, and `/verify-certificate`.
+- LIVE VERIFIED — Firebase Hosting root response had all six required security headers; CSP included `https://*.cloudfunctions.net`. Live homepage HTML included `js/firebase/firebase-config.js`, `js/features/home-auth.js`, and honest unavailable-backend course messaging.
+- LIVE VERIFIED — Firebase Hosting desktop browser checks of Home, Login, and Register returned HTTP 200 with no console errors or failed requests. Mobile Register at 390x844 had no horizontal overflow, console errors, or failed requests.
+- LIVE VERIFIED — Post-push Vercel checks returned HTTP 200 for all nine core routes after retrying one transient `/courses` connection reset. All six required headers and the Cloud Functions CSP origin were present.
+- LIVE VERIFIED — Vercel desktop Login and mobile Register at 390x844 returned HTTP 200 with no console errors or failed requests and no horizontal overflow.
+- NOT VERIFIED — Vercel's deployed source commit and Ready state; public site checks do not prove deployment provenance.
+- NOT VERIFIED — Positive Firebase Auth lifecycle and authenticated Firestore/RBAC tests; no authorized test inbox/account was supplied, and no registration or sign-in attempt was submitted.
 
 The current environment's default Node.js 20.12.2 test attempt failed loading a
 dependency with an incompatible module format, as expected for the Functions package's
@@ -286,11 +300,11 @@ all attributable to this final follow-up:
 
 - **Billing enabled:** No.
 - **Billing required for Functions deployment:** Yes, per Firebase deployment preflight (Blaze).
-- **Firebase Hosting deployment performed:** Yes. `firebase deploy --only hosting --project studio-100351834-51432` completed from commit `c51a569`.
+- **Firebase Hosting deployment performed:** Yes. `firebase deploy --only hosting --project studio-100351834-51432` completed after source commit `ba80120`; only static Hosting files were deployed.
 - **Functions, Storage, Firestore rules/indexes deployment performed:** No.
 - **Firebase Console configuration changed:** No.
 - **Vercel deployment performed:** No manual Vercel deployment was performed. Public Vercel responses for the required routes, aliases, headers, browser behavior, and current source markers were verified. The dashboard was inaccessible (403/Not authorized), so the current Vercel deployment commit and Ready status remain NOT VERIFIED.
-- **Application/configuration commits:** `a0fcf34`, `c4eefda`, `a1371e3`, `dce2686`, `1090974`, `4fda266`, `96c6771`, `c51a569`, and documentation commit `78ddc7c`.
+- **Application/configuration commits:** `a0fcf34`, `c4eefda`, `a1371e3`, `dce2686`, `1090974`, `4fda266`, `96c6771`, `c51a569`, and hardening commit `ba80120`. Earlier report-only commit: `78ddc7c`.
 - **Push to GitHub:** Yes. Each implementation/configuration commit was pushed to `origin/main`; the remote branch matched the local branch at final verification.
 - **Billing/data safety:** No billing, real accounts, credentials, or production records were created.
 

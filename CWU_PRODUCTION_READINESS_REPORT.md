@@ -13,11 +13,11 @@ This report separates source/static evidence from live service verification. No 
 | Component | Status | Evidence | Fix / external action required |
 | --- | --- | --- | --- |
 | GitHub repository | PASS | Local repository and `origin` refer to `cyberworlduniversity/cyber-world-university`. | None. |
-| Main branch | PASS | Final review began with local `main` clean and synchronized at `df03794311b0329b2e4e86f38dd3c4495f04a9c9`; the source fixes and reports are included in the reviewed release change set. Final worktree/push state is reported in the delivery summary. | None after the reviewed release commit is pushed. |
+| Main branch | PASS | Source hardening commit `ba80120a77876403e2647d4cf79410638704d79b` was pushed to `origin/main`; local `main` and `origin/main` matched afterward. | None for this source release. |
 | GitHub Actions | NOT VERIFIED | No tracked `.github/workflows` and GitHub API previously returned no workflow runs for `main`. | Configure a deployment workflow only if the owner wants CI; this static site has no root build pipeline. |
-| Vercel public frontend | PASS | Prior browser smoke: 29 desktop URLs and nine required mobile routes returned HTTP 200; no browser console errors, page exceptions, or failed requests. | Recheck post-deployment after an authorized release if Vercel integration deploys changes. |
+| Vercel public frontend | PASS | Post-push smoke returned HTTP 200 for all nine core routes. All six headers and the Functions-origin CSP were present. Desktop Login and mobile Register browser checks had no console errors or failed requests; `/courses` succeeded on retry after one transient connection reset. | Continue to check deployment provenance separately; public response behavior does not prove which commit is deployed. |
 | Vercel deployment provenance | NOT VERIFIED | Vercel deployment API returned 403; dashboard was unauthorized; no local Vercel CLI/token. Exact deployment commit and Ready state unknown. | Owner grants read access to project deployments or verifies Git repo, production branch, source commit, and Ready status in Vercel Dashboard. |
-| Firebase Hosting | PASS | Previously deployed Hosting-only and live route/header/browser checks were recorded. No Hosting deployment was repeated because relevant deployment config/routes were unchanged. | Deploy current static changes only after commit/review if owner authorizes the release. |
+| Firebase Hosting | PASS | After commit `ba80120`, Hosting-only deployment completed. All nine core routes returned HTTP 200; all six headers and Functions-origin CSP were present; homepage HTML included the Firebase config and home-auth script markers. Desktop Home/Login/Register and mobile Register browser checks had no console errors or failed requests. | None for static Hosting in this pass; backend remains unavailable. |
 | Firebase Authentication | NOT VERIFIED | Email/Password configuration previously showed enabled; invalid credentials were rejected. Positive registration, verification, login/logout/persistence, profile trigger, and profile creation have not been tested with an authorized account. | Two authorized, monitored test accounts/inboxes and explicit permission are needed for complete positive lifecycle and isolation tests. |
 | Firestore rules | NOT VERIFIED | Source is deny-by-default except restricted `users/{uid}` reads/updates; admin access now requires claim and matching profile role. Prior anonymous read was denied. No authenticated rules emulator tests or deployed-rule parity. | Run Emulator Suite tests with Java 21+ and compare live rules/indexes; deploy only after review and approval. |
 | RBAC | NOT VERIFIED | Source uses Auth UID, verified email guards, teacher-course assignment checks, and role checks against current Auth custom claim + server-managed profile; stale claim hardening was added. Functions/rules are not deployed/live-tested. | Deploy only after Firebase prerequisites; run authorized student/teacher/admin denial tests, including role revocation. |
@@ -52,10 +52,14 @@ This report separates source/static evidence from live service verification. No 
 - `git diff --check`: run after final edits before commit.
 - Functions exports/source reviewed: Auth creation/deletion, user profile sync/access, published catalog, student dashboard, teacher scope/rosters/content, enrollment/progress, quiz lifecycle, certificate lifecycle, admin user/certificate/course/role operations.
 - Firestore rules, Storage rules, indexes, Firebase/Vercel configs, Auth UI/client, course/dashboard/admin/quiz/certificate feature modules, deployment docs and test files reviewed.
-- Full JavaScript syntax validation initially used a CommonJS check against browser ES modules and failed due to validator mode mismatch; it did not indicate a source defect. Re-run with module-aware validation before finalizing.
+- Full JavaScript syntax validation used module-aware validation and parsed 43 tracked/current JavaScript files; Node parsed six JSON configuration/lock files.
 - Emulator tests were not run: available Java is 17; Firebase CLI emulator requires Java 21+ in the current setup.
 - No positive Auth or authenticated Firestore live test was attempted because no authorized test accounts/inboxes were supplied.
-- No Functions or Storage deployment, Firebase billing action, live database mutation, Hosting deployment, or Vercel redeployment was performed.
+- No Functions or Storage deployment, Firebase billing action, live database mutation, or manual Vercel deployment was performed. Firebase Hosting-only deployment did occur after the source commit.
+- `firebase deploy --only hosting --project studio-100351834-51432` succeeded; it deployed static Hosting files only.
+- Live Firebase Hosting and post-push Vercel route/header checks passed for the nine core routes. Desktop and mobile Auth UI browser checks reported no console errors or failed requests.
+- Home page live HTML contains Firebase Web config and `home-auth.js` markers; course listings are explicitly unavailable pending backend and App Check configuration.
+- The Functions test suite passed 10/10 under Node.js 22.23.3; lint passed; dependency audit reported 0 vulnerabilities; `git diff --check` passed before commit.
 
 ## Deployment, Git, and final blockers
 
@@ -63,7 +67,7 @@ This report separates source/static evidence from live service verification. No 
 - Cloud Functions and Storage remain unavailable/blocked by the previously reported Blaze prerequisite.
 - App Check is not configured; no real key was invented.
 - Firestore rules source changes are not deployed. Authenticated rule behavior and remote rule parity remain unverified.
-- Vercel public response behavior is previously verified, but deployment identity/Ready state is not.
+- Vercel public response behavior is verified after push, but deployment identity/Ready state is not.
 - No authorized inboxes or authenticated student/teacher/admin accounts are available for testing.
 - No payment service is configured.
 

@@ -51,7 +51,9 @@ requests when it is absent. Reconfirm this state in the Console before changing 
 Current evidence: a read-only Firebase CLI Functions listing returned no deployed
 functions. The source contains 27 exports; callable endpoints enforce App Check,
 privileged operations compare token/Auth/profile role state, and deployment preflight
-previously reported Blaze is required. Recent source changes are not deployed.
+previously reported Blaze is required. Hardening commit `ba80120` is pushed to
+`main`; only the static Firebase Hosting site was deployed. Functions remain
+undeployed and no billing setting was changed.
 
 1. No Console change is authorized while billing is restricted.
 2. **Do not enable Blaze, add a payment method, or start a paid service.**
@@ -112,7 +114,8 @@ state could not be confirmed.
 
 ## Already completed without a manual action
 
-- Firebase Hosting was deployed from the verified `main` source using Hosting only.
+- Firebase Hosting was deployed from hardening commit `ba80120` using Hosting only;
+  live core routes and response headers were rechecked after deployment.
 - The Hosting route aliases now match the existing Vercel aliases.
 - Vercel remains the primary production URL; Firebase Hosting is a secondary host.
 - No Functions, Storage, Firestore rules/indexes, billing, or production data were
