@@ -15,6 +15,40 @@
       "functions/**",
       "*.log"
     ],
+    "rewrites": [
+      {
+        "source": "/courses",
+        "destination": "/pages/courses.html"
+      },
+      {
+        "source": "/course-details",
+        "destination": "/pages/course-details.html"
+      },
+      {
+        "source": "/login",
+        "destination": "/pages/login.html"
+      },
+      {
+        "source": "/register",
+        "destination": "/pages/register.html"
+      },
+      {
+        "source": "/student-dashboard",
+        "destination": "/pages/student-dashboard.html"
+      },
+      {
+        "source": "/admin-panel",
+        "destination": "/pages/admin-panel.html"
+      },
+      {
+        "source": "/certificates",
+        "destination": "/pages/certificates.html"
+      },
+      {
+        "source": "/verify-certificate",
+        "destination": "/pages/verify-certificate.html"
+      }
+    ],
     "cleanUrls": true,
     "trailingSlash": false,
     "headers": [
