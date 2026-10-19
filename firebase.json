@@ -47,6 +47,14 @@
       {
         "source": "/verify-certificate",
         "destination": "/pages/verify-certificate.html"
+      },
+      {
+        "source": "/pages/dashboard",
+        "destination": "/pages/student-dashboard.html"
+      },
+      {
+        "source": "/pages/certificate-verification",
+        "destination": "/pages/verify-certificate.html"
       }
     ],
     "cleanUrls": true,

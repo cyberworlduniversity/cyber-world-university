@@ -54,6 +54,14 @@
       "dest": "/pages/verify-certificate.html"
     },
     {
+      "src": "/pages/dashboard\\.html$",
+      "dest": "/pages/student-dashboard.html"
+    },
+    {
+      "src": "/pages/certificate-verification\\.html$",
+      "dest": "/pages/verify-certificate.html"
+    },
+    {
       "handle": "filesystem"
     }
   ]
