@@ -99,19 +99,11 @@ authorized.
 
 ## Vercel deployment record
 
-Public Vercel routes, headers, aliases, and browser behavior were verified. The
-Vercel dashboard redirected to its sign-in page, and no Vercel CLI was installed,
-so account identity, project settings, exact deployed commit, and Ready state could
-not be confirmed.
-
-1. Sign in to the Vercel team that owns `cyber-world-university-2026` and grant the
-   authorized operator read access to the project deployments.
-2. Vercel Dashboard → `cyber-world-university-2026` → **Deployments** → inspect the
-   latest Production deployment.
-3. Confirm its Git repository is `cyberworlduniversity/cyber-world-university`,
-   branch is `main`, deployment status is **Ready**, and source commit is the latest
-   `main` commit. If not, redeploy the current `main` commit and repeat the live
-   route/header/browser checks.
+The authenticated dashboard confirms project `cyber-world-university-2026`, the
+expected repository, production branch `main`, production domain, and a **Ready**
+deployment at `0986b7b6d4b5184c9a01c2d0cb56fb53c83219b7`, matching GitHub `main`
+at the time of the check. Project Settings reports no environment variables added.
+No further Vercel action is currently required; recheck after future pushes.
 
 ## Already completed without a manual action
 
