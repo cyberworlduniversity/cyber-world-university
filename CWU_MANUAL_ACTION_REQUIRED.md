@@ -2,8 +2,11 @@
 
 Updated: 2026-10-19
 
-At this update, the latest previously verified repository release/configuration
-commit is `c51a569`; the subsequent `78ddc7c` commit changed the release report only.
+At the time of the 2026-10-19 live check, GitHub `main` was
+`a322887f35a8b85eafccb13cf8856e288125494a`, matching local `main`. This
+manual-action/report follow-up changes documentation only; the application/
+configuration commit remains `a322887`. Firebase Hosting remains deployed from
+configuration commit `c51a569`.
 
 No fake identities, credentials, payment records, enrollments, certificates, or
 learning records were created. Firebase remains on the Spark plan. Do not enable
