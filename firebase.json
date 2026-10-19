@@ -55,9 +55,17 @@
       {
         "source": "/pages/certificate-verification",
         "destination": "/pages/verify-certificate.html"
+      },
+      {
+        "source": "/pages/dashboard.html",
+        "destination": "/pages/student-dashboard.html"
+      },
+      {
+        "source": "/pages/certificate-verification.html",
+        "destination": "/pages/verify-certificate.html"
       }
     ],
-    "cleanUrls": true,
+    "cleanUrls": false,
     "trailingSlash": false,
     "headers": [
       {
