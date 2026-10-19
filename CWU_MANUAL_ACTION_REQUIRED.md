@@ -102,7 +102,9 @@ authorized.
 The authenticated dashboard confirms project `cyber-world-university-2026`, the
 expected repository, production branch `main`, production domain, and a **Ready**
 deployment at `0986b7b6d4b5184c9a01c2d0cb56fb53c83219b7`, matching GitHub `main`
-at the time of the check. Project Settings reports no environment variables added.
+at the first check. After the report-only commit, Vercel also showed deployment
+`ab7578a6951d8bc13d5e1f6bdc78fa55d9f0b845` as **Ready** on `main`, matching
+GitHub's latest SHA. Project Settings reports no environment variables added.
 No further Vercel action is currently required; recheck after future pushes.
 
 ## Already completed without a manual action

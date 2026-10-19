@@ -15,12 +15,12 @@ included the Cloud Functions origin, and the homepage contained the Firebase con
 and home-auth script references. Browser checks of Home, Login, and Register on
 desktop and Register at 390x844 reported no console errors or failed requests.
 
-After the push, all nine core Vercel routes returned HTTP 200. An initial `/courses`
-request had a transient connection reset; the retry succeeded. The required headers
-and Functions-origin CSP were present. Browser checks of Login on desktop and
-Register at 390x844 reported no console errors or failed requests. The Vercel
-deployment's exact source commit and Ready state remain NOT VERIFIED because the
-project dashboard/API is inaccessible.
+After the initial push, all nine core Vercel routes returned HTTP 200. An initial
+`/courses` request had a transient connection reset; the retry succeeded. The required
+headers and Functions-origin CSP were present. Browser checks of Login on desktop
+and Register at 390x844 reported no console errors or failed requests. At that point,
+deployment provenance was NOT VERIFIED; the authenticated Vercel checks below
+supersede that result.
 
 The Hosting deployment contained static website files only. No Firebase Functions,
 Storage, Firestore rules, or indexes were deployed, and this does not establish
@@ -40,8 +40,9 @@ At the time of that earlier check, the Vercel deployment identity was NOT VERIFI
 No billing was enabled, no account was created, and no production data was written.
 No Firebase backend service (Functions, Storage, Firestore rules, or indexes) was
 deployed. Firebase Hosting received only static website files and Hosting routing/header
-configuration. No new Vercel deployment was initiated through the inaccessible
-dashboard; the public Vercel site was tested directly.
+configuration. No manual Vercel deployment was initiated during the initial check; the connected
+Git integration later automatically deployed pushed `main` commits, and the latest
+deployment status and source commit were verified below.
 
 ## Status summary
 
@@ -310,9 +311,9 @@ all attributable to this final follow-up:
 
 | Area | Status | Evidence |
 | --- | --- | --- |
-| GitHub connection | PASS | Signed-in GitHub page identifies `cyberworlduniversity` as the owner of the expected repository. GitHub API lists `0986b7b6d4b5184c9a01c2d0cb56fb53c83219b7` at the `main` tip, matching local `main` and `origin/main`. |
+| GitHub connection | PASS | Signed-in GitHub page identifies `cyberworlduniversity` as the owner of the expected repository. GitHub API lists `ab7578a6951d8bc13d5e1f6bdc78fa55d9f0b845` at the `main` tip, matching local `main` and `origin/main`. |
 | GitHub Actions | NOT APPLICABLE | GitHub API reports zero workflows and zero workflow runs for `main`; no tracked workflow files exist. |
-| Vercel account/project access | PASS | Authenticated dashboard identifies the `hemanathane35s-projects` project team and shows `cyber-world-university-2026`, linked to the expected GitHub repository. Production branch is `main`, domain is `cyber-world-university-2026.vercel.app`, deployment status is **Ready**, and deployment SHA `0986b7b6d4b5184c9a01c2d0cb56fb53c83219b7` matches GitHub `main`. |
+| Vercel account/project access | PASS | Authenticated dashboard identifies the `hemanathane35s-projects` project team and shows `cyber-world-university-2026`, linked to the expected GitHub repository. Production branch is `main`, domain is `cyber-world-university-2026.vercel.app`, deployment status is **Ready**, and deployment SHA `ab7578a6951d8bc13d5e1f6bdc78fa55d9f0b845` matches GitHub `main`. |
 | Vercel environment configuration | PASS | Project Environment Variables page reports “No Environment Variables Added.” The site is static; Firebase Web configuration is public client configuration in the frontend. |
 | Firebase CLI/project access | PASS | Authenticated CLI listed expected project `studio-100351834-51432` as ACTIVE, its default Hosting site, and its active Web app. `.firebaserc` selects the expected project. The Firebase Console shows the same project and Spark plan. |
 | Firebase Email/Password provider | PASS | Firebase Console → Authentication → Sign-in method shows Email/Password **Enabled**. |
