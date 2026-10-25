@@ -1,0 +1,42 @@
+/* CWU Admin panel: consistent spacing, readable forms, and mobile-safe rows. */
+.admin-page { min-width: 0; }
+.admin-heading { max-width: 960px; }
+.admin-content { width: 100%; max-width: 1180px; min-width: 0; padding-bottom: 4rem; }
+.admin-content > .status-message { margin: 0 0 1rem; }
+.admin-card { width: 100%; min-width: 0; box-sizing: border-box; overflow: hidden; }
+.admin-card h2 { margin: 0; }
+.admin-card .muted { margin: 0; }
+.admin-card > select,
+.admin-card > .form-control,
+.admin-card .content-card,
+.admin-card form { width: 100%; max-width: 100%; box-sizing: border-box; }
+.admin-card select,
+.admin-card input,
+.admin-card textarea { max-width: 100%; box-sizing: border-box; }
+.admin-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: .75rem; align-items: center; width: 100%; min-width: 0; padding: .9rem 0; border-bottom: 1px solid var(--line); }
+.admin-row:last-child { border-bottom: 0; }
+.admin-row > * { min-width: 0; }
+.admin-row strong,
+.admin-row span { overflow-wrap: anywhere; }
+.admin-content .inline-actions { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
+.admin-content .content-card { margin: 0; }
+.admin-content .checkbox-control { display: flex; align-items: center; gap: .6rem; width: fit-content; max-width: 100%; }
+.admin-content .checkbox-control input { width: auto; flex: 0 0 auto; }
+.admin-content .form-control label,
+.admin-content label.form-control { min-width: 0; }
+.admin-content textarea { resize: vertical; }
+
+@media (max-width: 760px) {
+  .admin-content { padding-inline: 1rem; }
+  .admin-row { grid-template-columns: 1fr; align-items: stretch; }
+  .admin-row .btn,
+  .admin-row select { width: 100%; }
+  .admin-content .inline-actions { flex-direction: column; align-items: stretch; }
+  .admin-content .inline-actions .btn { width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .admin-heading h1 { font-size: clamp(1.7rem, 8vw, 2.2rem); overflow-wrap: anywhere; }
+  .admin-card { padding: 1rem; }
+  .admin-content { padding-inline: .75rem; }
+}
