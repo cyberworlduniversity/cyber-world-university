@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /pages/admin-panel.html
+Disallow: /pages/student-dashboard.html
+Disallow: /pages/login.html
+Disallow: /pages/register.html
+Disallow: /pages/certificate-generator.html
+Disallow: /data/
+Disallow: /functions/
+Disallow: /docs/
+Disallow: /QA/
+
+Sitemap: https://cyber-world-university-cwu.vercel.app/sitemap.xml
