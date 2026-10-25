@@ -4,16 +4,15 @@ Cyber World University (CWU) is a cybersecurity education website built with sem
 
 **Tagline:** Learn. Hack Ethically. Defend the Digital World.
 
-## Backend
+## Production backend
 
-CWU now uses **Supabase** instead of Firebase.
+CWU uses **Supabase** as its production backend.
 
 - Supabase Auth — learner authentication and email verification
 - PostgreSQL — LMS data
 - Row Level Security (RLS) — database authorization
-- Supabase RPC functions — trusted enrollment, lesson, quiz, and certificate operations
-- Supabase Storage — planned for protected learner assets
-- Supabase Edge Functions — available for future server-only integrations
+- Supabase RPC functions — enrollment, lesson completion, quiz attempts/grading, certificates, and role management
+- Supabase Storage — reserved for future protected learner assets
 
 Production Supabase project: `plmjrdokggqprmmylflu` in `ap-northeast-1`.
 
@@ -21,30 +20,33 @@ The browser uses only the Supabase publishable key. Never put a Supabase secret/
 
 ## LMS schema
 
-The existing Supabase database contains RLS-enabled CWU tables for:
+The production database contains RLS-enabled CWU tables for profiles, courses, lessons, enrollments, lesson progress, quizzes, quiz questions, quiz attempts, quiz answers, and certificates.
 
-- `cwu_profiles`
-- `cwu_courses`
-- `cwu_lessons`
-- `cwu_enrollments`
-- `cwu_lesson_progress`
-- `cwu_quizzes`
-- `cwu_quiz_questions`
-- `cwu_quiz_attempts`
-- `cwu_quiz_answers`
-- `cwu_certificates`
+The current database has **0 published courses**. The public catalog therefore shows a correct empty state until an authorized administrator publishes real course records.
 
-The database currently contains no published courses, so the public catalog correctly shows an empty state until an authorized administrator publishes real course records.
+## Authentication and authorization
 
-## Authentication flow
+1. Learners register with email/password.
+2. Supabase handles email confirmation.
+3. Protected frontend workflows require a verified Supabase user.
+4. The `cwu_profiles` row is keyed by the authenticated user ID.
+5. RLS and trusted PostgreSQL functions enforce access; browser state and user-editable metadata are never treated as authorization.
 
-1. Learner registers with email/password.
-2. Supabase sends the verification email when email confirmation is enabled.
-3. The learner signs in after verification.
-4. The `cwu_profiles` record is synchronized with the authenticated user's ID.
-5. Protected LMS operations use the authenticated Supabase session and database RLS/RPC authorization.
+## LMS workflows
 
-CWU never treats a browser-stored role or user-editable metadata as trusted authorization data.
+The frontend is wired to Supabase for:
+
+- Published course catalog
+- Free-course enrollment
+- Enrolled lesson access
+- Lesson completion
+- Server-managed quiz attempts and grading
+- Certificate eligibility and issuance
+- Public certificate verification
+- Student dashboard and profile data
+- Admin/teacher course, lesson, quiz, role, and certificate views
+
+Quiz answer keys remain server-side during official attempts. The browser receives only the question/options snapshot required for the attempt, and grading is performed by PostgreSQL.
 
 ## Project structure
 
@@ -64,30 +66,34 @@ cyber-world-university/
 └── docs/
 ```
 
-`js/supabase/` contains the browser Supabase client, profile service, and LMS adapter.
+There is no application runtime dependency on Firebase. The old `js/firebase/` compatibility directory has been removed.
 
-## Security
+## Security baseline
 
-- RLS is enabled on the CWU public LMS tables.
-- Frontend authorization is not treated as a security boundary.
-- Supabase publishable keys are safe to expose in browser code; privileged keys are not.
-- Course enrollment, lesson completion, quiz grading, certificate issuance, and certificate verification are handled through database policies/RPC functions rather than trusted browser-only state.
-- HTTPS URLs are validated before external learning links are opened.
+- CWU LMS tables have Row Level Security enabled.
+- Anonymous users cannot enroll, complete lessons, start/submit quizzes, or issue certificates.
+- Public certificate verification is intentionally available through its narrowly validated verification-code RPC.
+- Sensitive RPCs use explicit authentication/role checks and an empty `search_path`.
+- The frontend never contains a Supabase service-role/secret key.
+- External learning URLs are restricted to HTTPS.
+- Paid enrollment remains fail-closed until a real payment provider and server-side webhook verification are implemented.
 
-Run the Supabase security advisor after database changes and resolve any finding that does not match the intended public/private access model.
+Supabase security findings should be reviewed after every database change. SECURITY DEFINER warnings for protected RLS helper/transaction functions are intentional only where the function body contains its own authorization checks.
 
-## Local development
+## Deployment
 
-This is a static frontend. Serve the repository with any local HTTP server and open the local URL. Do not rely on `file://` for authentication testing.
+The GitHub `main` branch is connected to the Vercel production project `cyber-world-university-2026`. Recent production deployments are reported as **READY** and are sourced from the current `main` commits.
 
-No Firebase CLI, Firebase Hosting configuration, Firestore rules, Firebase Storage rules, or Firebase Cloud Functions are required by the current CWU application.
+Because this is a static frontend, Vercel does not require a frontend build step. Use an HTTP server for local development; do not test Supabase Auth from `file://` URLs.
 
-## Important status
+## Launch checklist
 
-The Supabase migration is active in the source tree. Authentication, profile synchronization, course catalog access, free enrollment, lesson completion, quiz RPC integration, certificate RPC integration, and learner dashboard data access are wired to Supabase.
+Before publicly accepting real learners, the owner should:
 
-Some legacy feature modules still require follow-up migration from their old adapter imports before every admin/teacher workflow is considered complete. They must not be described as production-ready until those workflows are verified against the Supabase project.
-
-Payments are not configured. Paid enrollment must remain unavailable until a real payment provider and server-side payment verification flow are implemented.
+1. Publish the real CWU courses, lessons, and quizzes through the admin workflow.
+2. Test one authorized student account through registration, email verification, enrollment, lesson completion, quiz submission, and certificate issuance.
+3. Test one teacher and one admin account and verify role isolation.
+4. Configure a real payment provider only if paid courses are offered, including server-side webhook/signature verification.
+5. Re-run the Supabase security advisor and browser smoke tests after production data/configuration changes.
 
 Security-learning content is intended for authorized labs, legal testing, and systems the learner owns or has explicit permission to assess.
