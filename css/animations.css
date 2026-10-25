@@ -1,3 +1,5 @@
+@import url('./alignment.css');
+
 .reveal {
   opacity: 0;
   transform: translate3d(0, 1rem, 0);
@@ -9,139 +11,65 @@
   transform: translate3d(0, 0, 0);
 }
 
-.reveal[data-reveal='left'] {
-  transform: translate3d(-1rem, 0, 0);
-}
-
-.reveal[data-reveal='right'] {
-  transform: translate3d(1rem, 0, 0);
-}
-
-.reveal[data-reveal='scale'] {
-  transform: scale(0.97);
-}
-
-.reveal[data-reveal='blur'] {
-  filter: blur(5px);
-}
-
+.reveal[data-reveal='left'] { transform: translate3d(-1rem, 0, 0); }
+.reveal[data-reveal='right'] { transform: translate3d(1rem, 0, 0); }
+.reveal[data-reveal='scale'] { transform: scale(0.97); }
+.reveal[data-reveal='blur'] { filter: blur(5px); }
 .reveal[data-reveal='left'].visible,
 .reveal[data-reveal='right'].visible,
 .reveal[data-reveal='scale'].visible,
-.reveal[data-reveal='blur'].visible {
-  transform: none;
-  filter: none;
-}
+.reveal[data-reveal='blur'].visible { transform: none; filter: none; }
 
 .hero-copy > :nth-child(1) { --enter-order: 0; }
 .hero-copy > :nth-child(2) { --enter-order: 1; }
 .hero-copy > :nth-child(3) { --enter-order: 2; }
 .hero-copy > :nth-child(4) { --enter-order: 3; }
 .hero-copy > :nth-child(5) { --enter-order: 4; }
-
-.hero-copy > * {
-  animation: cwu-enter 480ms both;
-  animation-delay: calc(var(--enter-order, 0) * 65ms);
-}
-
-.hero-visual .visual-panel {
-  animation: cwu-scale-in 520ms 120ms both;
-}
-
+.hero-copy > * { animation: cwu-enter 480ms both; animation-delay: calc(var(--enter-order, 0) * 65ms); }
+.hero-visual .visual-panel { animation: cwu-scale-in 520ms 120ms both; }
 .course-card,
 .catalog-card,
 .feature-card,
 .content-card,
-.platform-card {
-  transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
-}
-
+.platform-card { transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition); }
 .course-card:hover,
 .catalog-card:hover,
 .feature-card:hover,
 .content-card:hover,
-.platform-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(62, 169, 255, 0.35);
-}
-
-.course-card-image-source {
-  transition: transform 300ms ease;
-}
-
+.platform-card:hover { transform: translateY(-3px); border-color: rgba(62, 169, 255, 0.35); }
+.course-card-image-source { transition: transform 300ms ease; }
 .btn:active,
 .filter-btn:active,
-.small-button:active {
-  transform: translateY(1px) scale(0.985);
-}
-
-.progress-track span {
-  transition: transform 500ms ease;
-}
+.small-button:active { transform: translateY(1px) scale(0.985); }
+.progress-track span { transition: transform 500ms ease; }
 
 @keyframes cwu-enter {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 0.75rem, 0);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
+  from { opacity: 0; transform: translate3d(0, 0.75rem, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
-
 @keyframes cwu-scale-in {
-  from {
-    opacity: 0;
-    transform: scale(0.985);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.985); }
+  to { opacity: 1; transform: scale(1); }
 }
-
 @keyframes learning-float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-5px); }
 }
-
-@keyframes learning-progress-in {
-  to { transform: scaleX(1); }
-}
-
-@keyframes network-drift {
-  to { stroke-dashoffset: -136; }
-}
-
+@keyframes learning-progress-in { to { transform: scaleX(1); } }
+@keyframes network-drift { to { stroke-dashoffset: -136; } }
 @keyframes status-glow {
   0%, 100% { box-shadow: 0 0 8px rgba(134, 247, 182, 0.42); }
   50% { box-shadow: 0 0 15px rgba(134, 247, 182, 0.86); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  *,
-  *::before,
-  *::after {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
   }
-
-  .reveal,
-  .reveal.visible {
-    opacity: 1;
-    transform: none;
-    filter: none;
-  }
-
-  .hero-copy > *,
-  .hero-visual .visual-panel {
-    animation: none !important;
-  }
+  .reveal, .reveal.visible { opacity: 1; transform: none; filter: none; }
+  .hero-copy > *, .hero-visual .visual-panel { animation: none !important; }
 }
