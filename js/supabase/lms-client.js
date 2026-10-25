@@ -8,22 +8,16 @@ export async function waitForAuth() { const { data: { session } } = await supaba
 async function requireUser() { const user = await waitForAuth(); if (!user || !user.email_confirmed_at) { const error = new Error('Sign in with a verified account to continue.'); error.code = 'unauthenticated'; throw error; } return user; }
 
 export async function callLms(name, data = {}) {
-  const user = await waitForAuth();
   if (name === 'listPublishedCourses') {
-    const { data: courses, error } = await supabase.from('cwu_courses').select('id,title,slug,description,category,level,duration_minutes,instructor_id,thumbnail_url,is_published,is_archived,price_inr').eq('is_published', true).eq('is_archived', false).order('created_at', { ascending: false });
+    // The public catalog must be independent of authentication and private tables.
+    // Only query the published course rows needed to render the catalog.
+    const { data: courses, error } = await supabase
+      .from('cwu_courses')
+      .select('id,title,slug,description,category,level,duration_minutes,thumbnail_url,is_published,is_archived,price_inr')
+      .eq('is_published', true)
+      .eq('is_archived', false)
+      .order('created_at', { ascending: false });
     if (error) throw error;
-
-    // Public course browsing must not depend on access to private profile rows.
-    // Instructor names are optional presentation data; use the safe fallback
-    // instead of querying cwu_profiles and turning a public catalog request
-    // into a 42501 authorization failure for anonymous visitors.
-    let enrollmentMap = new Map();
-    if (user?.email_confirmed_at) {
-      const { data: enrollments, error: enrollmentError } = await supabase.from('cwu_enrollments').select('course_id,status').eq('student_id', user.id);
-      if (enrollmentError) throw enrollmentError;
-      enrollmentMap = new Map((enrollments || []).map((item) => [item.course_id, item.status]));
-    }
-
     return {
       courses: (courses || []).map((course) => ({
         id: course.id,
@@ -38,7 +32,7 @@ export async function callLms(name, data = {}) {
         price: Number(course.price_inr || 0),
         currency: 'INR',
         status: 'published',
-        enrollmentStatus: enrollmentMap.get(course.id) || null
+        enrollmentStatus: null
       }))
     };
   }
