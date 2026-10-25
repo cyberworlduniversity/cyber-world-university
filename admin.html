@@ -38,6 +38,7 @@
   <script type="module">
     const ADMIN_EMAIL = 'ehemanathan143@gmail.com';
     const SUPABASE_URL = 'https://plmjrdokggqprmmylflu.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_gZblcIsqUvAFbOOhRl-AdQ_3BmMN_z5';
     const status = document.getElementById('adminStatus');
     const content = document.getElementById('adminContent');
     const signOut = document.getElementById('signOutBtn');
@@ -63,13 +64,10 @@
       return supabase;
     }
 
-    async function getAuthenticatedUser(client, session) {
-      // Use the authenticated Supabase API directly instead of waiting on the
-      // browser auth lock used by getUser(). This prevents the admin page from
-      // remaining on "Checking administrator access…" indefinitely.
+    async function getAuthenticatedUser(session) {
       const response = await withTimeout(fetch(`${SUPABASE_URL}/auth/v1/user`, {
         headers: {
-          apikey: client.supabaseKey || '',
+          apikey: SUPABASE_PUBLISHABLE_KEY,
           Authorization: `Bearer ${session.access_token}`
         }
       }), 8000, 'Authentication check');
@@ -93,7 +91,7 @@
           return;
         }
 
-        const user = await getAuthenticatedUser(client, session);
+        const user = await getAuthenticatedUser(session);
         const email = (user.email || '').toLowerCase();
         if (email !== ADMIN_EMAIL) {
           setStatus('Access denied. This admin panel is restricted to the CWU administrator account.', 'error');
