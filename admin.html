@@ -7,7 +7,7 @@
   <title>CWU Admin Panel</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
-    .admin-shell{min-height:100vh;padding:32px 16px}.admin-wrap{max-width:1200px;margin:0 auto}.admin-top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}.admin-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.admin-card{padding:20px;border:1px solid rgba(0,255,120,.18);border-radius:16px;background:rgba(255,255,255,.035)}.admin-card h2{margin:0 0 8px}.admin-card p{margin:0;opacity:.75}.admin-section{margin-top:24px;padding:24px;border:1px solid rgba(0,255,120,.18);border-radius:16px;background:rgba(255,255,255,.025)}.admin-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px}.admin-btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 16px;border-radius:10px;border:1px solid rgba(0,255,120,.3);background:transparent;color:inherit;text-decoration:none;cursor:pointer}.admin-btn.primary{background:#00d86b;color:#06110a;border-color:#00d86b;font-weight:700}.admin-status{margin:12px 0;padding:12px;border-radius:10px;background:rgba(255,255,255,.05)}
+    .admin-shell{min-height:100vh;padding:32px 16px}.admin-wrap{max-width:1200px;margin:0 auto}.admin-top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}.admin-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.admin-card{padding:20px;border:1px solid rgba(0,255,120,.18);border-radius:16px;background:rgba(255,255,255,.035)}.admin-card h2{margin:0 0 8px}.admin-card p{margin:0;opacity:.75}.admin-section{margin-top:24px;padding:24px;border:1px solid rgba(0,255,120,.18);border-radius:16px;background:rgba(255,255,255,.025)}.admin-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px}.admin-btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 16px;border-radius:10px;border:1px solid rgba(0,255,120,.3);background:transparent;color:inherit;text-decoration:none;cursor:pointer}.admin-btn.primary{background:#00d86b;color:#06110a;border-color:#00d86b;font-weight:700}.admin-status{margin:12px 0;padding:14px;border-radius:10px;background:rgba(255,255,255,.05);line-height:1.5}.admin-status.error{border:1px solid rgba(255,90,90,.35)}.admin-status.success{border:1px solid rgba(0,216,107,.3)}.admin-retry{display:none;margin-top:12px}.admin-retry.visible{display:inline-flex}
     @media(max-width:900px){.admin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:560px){.admin-shell{padding:20px 12px}.admin-top{align-items:flex-start;flex-direction:column}.admin-grid{grid-template-columns:1fr}.admin-section{padding:18px}}
   </style>
 </head>
@@ -19,7 +19,8 @@
         <button class="admin-btn" id="signOutBtn" type="button">Sign out</button>
       </header>
 
-      <div id="adminStatus" class="admin-status">Checking administrator access…</div>
+      <div id="adminStatus" class="admin-status" role="status" aria-live="polite">Loading secure administrator check…</div>
+      <button class="admin-btn admin-retry" id="retryBtn" type="button">Retry access check</button>
 
       <section id="adminContent" hidden>
         <div class="admin-grid">
@@ -33,28 +34,102 @@
       </section>
     </div>
   </main>
-  <script type="module">
-    import { supabase } from './js/supabase/supabase-client.js';
 
+  <script type="module">
     const ADMIN_EMAIL = 'ehemanathan143@gmail.com';
+    const SUPABASE_URL = 'https://plmjrdokggqprmmylflu.supabase.co';
     const status = document.getElementById('adminStatus');
     const content = document.getElementById('adminContent');
     const signOut = document.getElementById('signOutBtn');
+    const retry = document.getElementById('retryBtn');
+    let supabase;
 
-    async function guard() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { window.location.href = 'pages/login.html?redirect=../admin.html'; return; }
-      const email = (user.email || '').toLowerCase();
-      const { data: profile, error } = await supabase.from('cwu_profiles').select('role').eq('id', user.id).maybeSingle();
-      if (error || email !== ADMIN_EMAIL || profile?.role !== 'admin') {
-        status.textContent = 'Access denied. Administrator privileges are required.';
-        return;
-      }
-      status.textContent = `Signed in as ${user.email}. Administrator access confirmed.`;
-      content.hidden = false;
+    function setStatus(message, type = '') {
+      status.textContent = message;
+      status.className = `admin-status${type ? ` ${type}` : ''}`;
     }
 
-    signOut.addEventListener('click', async () => { await supabase.auth.signOut(); window.location.href = 'pages/login.html'; });
+    function withTimeout(promise, ms, label) {
+      return Promise.race([
+        promise,
+        new Promise((_, reject) => setTimeout(() => reject(new Error(`${label} timed out`)), ms))
+      ]);
+    }
+
+    async function loadSupabase() {
+      if (supabase) return supabase;
+      const module = await withTimeout(import('./js/supabase/supabase-client.js'), 8000, 'Supabase client loading');
+      supabase = module.supabase;
+      return supabase;
+    }
+
+    async function getAuthenticatedUser(client, session) {
+      // Use the authenticated Supabase API directly instead of waiting on the
+      // browser auth lock used by getUser(). This prevents the admin page from
+      // remaining on "Checking administrator access…" indefinitely.
+      const response = await withTimeout(fetch(`${SUPABASE_URL}/auth/v1/user`, {
+        headers: {
+          apikey: client.supabaseKey || '',
+          Authorization: `Bearer ${session.access_token}`
+        }
+      }), 8000, 'Authentication check');
+      if (!response.ok) throw new Error(`Authentication check failed (${response.status})`);
+      return response.json();
+    }
+
+    async function guard() {
+      retry.classList.remove('visible');
+      content.hidden = true;
+      setStatus('Checking your secure administrator session…');
+
+      try {
+        const client = await loadSupabase();
+        const { data, error } = await withTimeout(client.auth.getSession(), 8000, 'Session check');
+        if (error) throw error;
+        const session = data?.session;
+
+        if (!session?.access_token) {
+          window.location.replace('pages/login.html?redirect=../admin.html');
+          return;
+        }
+
+        const user = await getAuthenticatedUser(client, session);
+        const email = (user.email || '').toLowerCase();
+        if (email !== ADMIN_EMAIL) {
+          setStatus('Access denied. This admin panel is restricted to the CWU administrator account.', 'error');
+          return;
+        }
+
+        const { data: profile, error: profileError } = await withTimeout(
+          client.from('cwu_profiles').select('role').eq('id', user.id).maybeSingle(),
+          8000,
+          'Administrator role check'
+        );
+        if (profileError) throw profileError;
+        if (profile?.role !== 'admin') {
+          setStatus('Access denied. Your account is not assigned the administrator role.', 'error');
+          return;
+        }
+
+        setStatus(`Administrator access confirmed for ${user.email}.`, 'success');
+        content.hidden = false;
+      } catch (error) {
+        console.error('CWU admin access check failed:', error);
+        setStatus(`Unable to complete the administrator check. ${error?.message || 'Please try again.'}`, 'error');
+        retry.classList.add('visible');
+      }
+    }
+
+    signOut.addEventListener('click', async () => {
+      try {
+        const client = await loadSupabase();
+        await client.auth.signOut();
+      } finally {
+        window.location.replace('pages/login.html');
+      }
+    });
+
+    retry.addEventListener('click', guard);
     guard();
   </script>
 </body>
