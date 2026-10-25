@@ -52,8 +52,9 @@ function bindLogin(form) {
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (!form.reportValidity()) return;
-    setBusy(form, true, 'Signing in...');
-    updateStatus(status, 'Signing in...');
+    setBusy(form, true, 'Signing in…');
+    updateStatus(status, 'Signing in…');
+
     try {
       const requestedEmail = emailInput.value.trim().toLowerCase();
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -65,18 +66,22 @@ function bindLogin(form) {
         await supabase.auth.signOut();
         throw new Error('Email not confirmed');
       }
-      await ensureProfile(data.user);
+
+      // Authentication is complete. Do not make the user wait for the profile
+      // synchronization request before opening the dashboard.
+      void ensureProfile(data.user).catch((profileError) => {
+        console.warn('Background CWU profile synchronization failed.', profileError);
+      });
 
       const signedInEmail = String(data.user.email || requestedEmail).trim().toLowerCase();
       const isPrimaryAdmin = signedInEmail === PRIMARY_ADMIN_EMAIL;
-      updateStatus(status, isPrimaryAdmin ? 'Admin sign-in successful. Opening the earning panel…' : 'You are signed in.');
+      updateStatus(status, 'Signed in. Opening your CWU area…');
       window.CWU?.showToast?.(isPrimaryAdmin ? 'Admin signed in successfully.' : 'Signed in successfully.');
-      setTimeout(() => {
-        window.location.href = isPrimaryAdmin ? 'admin-panel.html' : 'student-dashboard.html';
-      }, 500);
+
+      // No artificial delay: redirect immediately after successful authentication.
+      window.location.replace(isPrimaryAdmin ? 'admin.html' : 'student-dashboard.html');
     } catch (error) {
       updateStatus(status, userMessage(error), true);
-    } finally {
       setBusy(form, false);
     }
   });
@@ -131,7 +136,7 @@ function bindRegistration(form) {
         options: { data: { full_name: form.elements.name.value.trim() } }
       });
       if (error) throw error;
-      if (data.user) await ensureProfile(data.user, form.elements.name.value.trim());
+      if (data.user) void ensureProfile(data.user, form.elements.name.value.trim());
       updateStatus(status, data.session
         ? 'Your account was created and you are signed in.'
         : 'Your account was created. Check your email to verify your address before signing in.');
