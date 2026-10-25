@@ -8,12 +8,27 @@ function formatLevel(value) { return typeof value === 'string' ? value.charAt(0)
 function safeHttpsUrl(value) { if (typeof value !== 'string') return null; try { const url = new URL(value); return url.protocol === 'https:' && !url.username && !url.password ? url.href : null; } catch { return null; } }
 function courseCard(course, enrollmentStatus) { const card = createElement('article', undefined, 'catalog-card'); const title = createElement('h2', course.title); const metadata = createElement('ul', undefined, 'badge-list'); [course.category, formatLevel(course.level), course.duration, `Instructor: ${course.instructor || 'CWU instructional team'}`, formatPrice(course), 'Published'].forEach((value) => metadata.append(createElement('li', value))); const description = createElement('p', course.description); const state = createElement('p', enrollmentStatus ? `Enrollment: ${enrollmentStatus}` : 'Enrollment: not enrolled'); const link = createElement('a', 'View course', 'btn btn-primary'); link.href = `course-details.html?id=${encodeURIComponent(course.id)}`; card.append(title, metadata, description, state, link); return card; }
 async function loadCatalog() {
-  catalog.replaceChildren(createElement('p', 'Loading published courses…', 'muted')); const status = document.getElementById('course-result-count'); setStatus(status, 'Loading published courses…');
-  try { const [result, user] = await Promise.all([callLms('listPublishedCourses'), waitForAuth()]); const courses = Array.isArray(result.courses) ? result.courses : []; catalog.replaceChildren(); if (!courses.length) { catalog.append(createElement('p', 'No published courses are currently available.', 'empty-state')); setStatus(status, 'No published courses are currently available.'); return; }
+  catalog.replaceChildren(createElement('p', 'Loading published courses…', 'muted')); const status = document.getElementById('course-result-count'); setStatus(status, 'Checking CWU course backend…');
+  try {
+    // Course availability is independent of authentication. Never let an auth
+    // timeout or session error make a healthy public catalog look unavailable.
+    const result = await callLms('listPublishedCourses');
+    const courses = Array.isArray(result.courses) ? result.courses : [];
+    let user = null;
+    try {
+      user = await Promise.race([
+        waitForAuth(),
+        new Promise((resolve) => setTimeout(() => resolve(null), 2000))
+      ]);
+    } catch (_) {
+      user = null;
+    }
+    catalog.replaceChildren();
+    if (!courses.length) { catalog.append(createElement('p', 'No published courses are currently available.', 'empty-state')); setStatus(status, 'CWU backend responded successfully, but returned 0 published courses.'); return; }
     const search = document.getElementById('course-search'); const category = document.getElementById('category-filter'); const level = document.getElementById('level-filter'); const clearSearch = document.getElementById('clear-course-search'); const clearFilters = document.getElementById('clear-course-filters'); const categories = [...new Set(courses.map((course) => course.category).filter(Boolean))].sort(); const levels = [...new Set(courses.map((course) => course.level).filter(Boolean))].sort(); [...category.options].slice(1).forEach((option) => option.remove()); [...level.options].slice(1).forEach((option) => option.remove()); categories.forEach((value) => { const option = createElement('option', value); option.value = value; category.append(option); }); levels.forEach((value) => { const option = createElement('option', formatLevel(value)); option.value = value; level.append(option); });
     const render = () => { const query = search.value.trim().toLowerCase(); const matches = courses.filter((course) => ((!category.value || course.category === category.value) && (!level.value || course.level === level.value) && `${course.title} ${course.description} ${course.category} ${course.level} ${course.instructor}`.toLowerCase().includes(query))); catalog.replaceChildren(); matches.forEach((course) => catalog.append(courseCard(course, user ? course.enrollmentStatus : null))); if (!matches.length) catalog.append(createElement('p', 'No published courses match these filters.', 'empty-state')); setStatus(status, `${matches.length} published ${matches.length === 1 ? 'course' : 'courses'} shown.`); clearSearch.disabled = !search.value; clearFilters.disabled = !search.value && !category.value && !level.value; };
     search.addEventListener('input', render); category.addEventListener('change', render); level.addEventListener('change', render); clearSearch.addEventListener('click', () => { search.value = ''; render(); search.focus(); }); clearFilters.addEventListener('click', () => { search.value = ''; category.value = ''; level.value = ''; render(); }); render();
-  } catch (error) { catalog.replaceChildren(createElement('p', 'Published courses could not be loaded. No local catalog is being shown as authoritative data.', 'status-message error')); setStatus(status, readableError(error), true); }
+  } catch (error) { catalog.replaceChildren(createElement('p', 'CWU course backend check failed. No sample or local catalog is being shown.', 'status-message error')); setStatus(status, readableError(error), true); }
 }
 async function loadCourseDetails() {
   const params = new URLSearchParams(window.location.search); const courseId = params.get('id'); const status = createElement('p', 'Loading course from CWU…', 'status-message'); const nextSteps = document.querySelector('[aria-labelledby="course-next-steps"]'); const contentGrid = document.querySelector('.page-content .content-grid'); const outline = document.getElementById('course-outline'); const metadata = document.getElementById('course-meta'); if (!courseId) { setStatus(status, 'A course ID is required. Browse the published catalog to select a course.', true); nextSteps.prepend(status); return; } nextSteps.prepend(status); detailTitle.textContent = 'Loading course…';
