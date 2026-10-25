@@ -1,0 +1,46 @@
+/* Site-wide alignment guardrails. Loaded after the base stylesheet. */
+html, body { max-width: 100%; overflow-x: hidden; }
+*, *::before, *::after { min-width: 0; }
+.container { width: min(var(--container, 1180px), calc(100% - 2rem)); }
+main, section, article, aside, header, footer { max-width: 100%; }
+.page-heading, .page-content { min-width: 0; }
+.page-heading h1, .page-heading h2, .section-heading h2, .content-card h2, .content-card h3 { overflow-wrap: anywhere; }
+.page-content > *, .page-content .stack > *, .section > .container > * { min-width: 0; }
+.grid, .card-grid, .course-grid, .feature-grid, .auth-layout, .footer-grid { min-width: 0; }
+.card-grid, .course-grid, .feature-grid { align-items: stretch; }
+.course-card, .catalog-card, .feature-card, .content-card, .platform-card { min-width: 0; overflow-wrap: anywhere; }
+.course-card img, .catalog-card img, .feature-card img, .content-card img { max-width: 100%; height: auto; object-fit: contain; }
+form { min-width: 0; }
+input, select, textarea { width: 100%; max-width: 100%; min-width: 0; }
+button, .btn { max-width: 100%; }
+.table-wrap, .table-responsive, table { max-width: 100%; }
+.table-wrap, .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table { border-collapse: collapse; }
+pre, code { max-width: 100%; overflow-x: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
+.nav-links, .nav-actions { min-width: 0; }
+.logo-text { overflow-wrap: anywhere; }
+.hero-grid, .auth-layout { align-items: stretch; }
+
+@media (max-width: 900px) {
+  .hero-grid, .auth-layout { grid-template-columns: 1fr; }
+  .hero-copy { order: 1; }
+  .hero-visual { order: 2; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 720px) {
+  .container { width: min(100% - 1.25rem, var(--container, 1180px)); }
+  .section { padding: 3.5rem 0; }
+  .hero { padding-top: 2.5rem; }
+  .hero-stats { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hero-actions, .nav-actions { flex-wrap: wrap; }
+  .hero-actions .btn { flex: 1 1 12rem; }
+}
+
+@media (max-width: 480px) {
+  .stats { grid-template-columns: 1fr; }
+  .container { width: min(100% - 1rem, var(--container, 1180px)); }
+  .btn { width: 100%; }
+  .hero-actions { align-items: stretch; }
+}
