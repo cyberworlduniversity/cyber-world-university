@@ -9,14 +9,12 @@ async function requireUser() { const user = await waitForAuth(); if (!user || !u
 
 export async function callLms(name, data = {}) {
   if (name === 'listPublishedCourses') {
-    // The public catalog must be independent of authentication and private tables.
-    // Only query the published course rows needed to render the catalog.
+    // Public catalog uses the dedicated read-only view. This avoids private-table
+    // permissions and does not require Firebase/App Check or a signed-in user.
     const { data: courses, error } = await supabase
-      .from('cwu_courses')
-      .select('id,title,slug,description,category,level,duration_minutes,thumbnail_url,is_published,is_archived,price_inr')
-      .eq('is_published', true)
-      .eq('is_archived', false)
-      .order('created_at', { ascending: false });
+      .from('cwu_public_courses')
+      .select('id,title,slug,description,category,level,duration_minutes,thumbnail_url,price_inr')
+      .order('title', { ascending: true });
     if (error) throw error;
     return {
       courses: (courses || []).map((course) => ({
