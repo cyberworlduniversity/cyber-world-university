@@ -4,9 +4,8 @@ export { supabase };
 export const auth = supabase.auth;
 export function onAuthStateChanged(callback) { const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => callback(session?.user || null)); return () => subscription.unsubscribe(); }
 export function signOut() { return supabase.auth.signOut(); }
-
 export async function waitForAuth() { const { data: { session } } = await supabase.auth.getSession(); return session?.user || null; }
-async function requireUser() { const user = await waitForAuth(); if (!user) { const error = new Error('Sign in with a verified account to continue.'); error.code = 'unauthenticated'; throw error; } return user; }
+async function requireUser() { const user = await waitForAuth(); if (!user || !user.email_confirmed_at) { const error = new Error('Sign in with a verified account to continue.'); error.code = 'unauthenticated'; throw error; } return user; }
 
 export async function callLms(name, data = {}) {
   const user = await waitForAuth();
@@ -14,7 +13,7 @@ export async function callLms(name, data = {}) {
     const { data: courses, error } = await supabase.from('cwu_courses').select('id,title,slug,description,category,level,duration_minutes,instructor_id,thumbnail_url,is_published,is_archived,price_inr').eq('is_published', true).eq('is_archived', false).order('created_at', { ascending: false });
     if (error) throw error;
     let enrollmentMap = new Map();
-    if (user) { const { data: enrollments, error: enrollmentError } = await supabase.from('cwu_enrollments').select('course_id,status').eq('student_id', user.id); if (enrollmentError) throw enrollmentError; enrollmentMap = new Map((enrollments || []).map((item) => [item.course_id, item.status])); }
+    if (user?.email_confirmed_at) { const { data: enrollments, error: enrollmentError } = await supabase.from('cwu_enrollments').select('course_id,status').eq('student_id', user.id); if (enrollmentError) throw enrollmentError; enrollmentMap = new Map((enrollments || []).map((item) => [item.course_id, item.status])); }
     const instructorIds = [...new Set((courses || []).map((c) => c.instructor_id).filter(Boolean))]; let instructors = new Map();
     if (instructorIds.length) { const { data: profiles, error: profileError } = await supabase.from('cwu_profiles').select('id,full_name').in('id', instructorIds); if (profileError) throw profileError; instructors = new Map((profiles || []).map((p) => [p.id, p.full_name])); }
     return { courses: (courses || []).map((course) => ({ id: course.id, title: course.title, slug: course.slug, description: course.description, category: course.category, level: course.level, duration: course.duration_minutes ? `${course.duration_minutes} min` : '', instructor: instructors.get(course.instructor_id) || 'CWU instructional team', thumbnail: course.thumbnail_url, price: Number(course.price_inr || 0), currency: 'INR', status: 'published', enrollmentStatus: enrollmentMap.get(course.id) || null })) };
