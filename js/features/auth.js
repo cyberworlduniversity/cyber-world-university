@@ -1,5 +1,7 @@
 import { supabase } from '../supabase/supabase-client.js';
 
+const PRIMARY_ADMIN_EMAIL = 'ehemanathan143@gmail.com';
+
 const messages = {
   'invalid_credentials': 'The email or password is incorrect.',
   'email_not_confirmed': 'Verify your email address before signing in.',
@@ -53,6 +55,7 @@ function bindLogin(form) {
     setBusy(form, true, 'Signing in...');
     updateStatus(status, 'Signing in...');
     try {
+      const requestedEmail = emailInput.value.trim().toLowerCase();
       const { data, error } = await supabase.auth.signInWithPassword({
         email: emailInput.value.trim(),
         password: form.elements.password.value
@@ -63,9 +66,14 @@ function bindLogin(form) {
         throw new Error('Email not confirmed');
       }
       await ensureProfile(data.user);
-      updateStatus(status, 'You are signed in.');
-      window.CWU?.showToast?.('Signed in successfully.');
-      setTimeout(() => { window.location.href = 'student-dashboard.html'; }, 500);
+
+      const signedInEmail = String(data.user.email || requestedEmail).trim().toLowerCase();
+      const isPrimaryAdmin = signedInEmail === PRIMARY_ADMIN_EMAIL;
+      updateStatus(status, isPrimaryAdmin ? 'Admin sign-in successful. Opening the earning panel…' : 'You are signed in.');
+      window.CWU?.showToast?.(isPrimaryAdmin ? 'Admin signed in successfully.' : 'Signed in successfully.');
+      setTimeout(() => {
+        window.location.href = isPrimaryAdmin ? 'admin-panel.html' : 'student-dashboard.html';
+      }, 500);
     } catch (error) {
       updateStatus(status, userMessage(error), true);
     } finally {
